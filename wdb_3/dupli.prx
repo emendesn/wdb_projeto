@@ -1,0 +1,140 @@
+#include "rwmake.ch"        // incluido pelo assistente de conversao do AP5 IDE em 19/11/99
+
+User Function Dupli()        // incluido pelo assistente de conversao do AP5 IDE em 19/11/99
+
+LOCAL cTitulo := "EMISSAO DE DUPLICATAS"
+LOCAL cPerg   := "MTR750"
+
+	IF pergunte( cPerg, .T.)
+		
+		RptStatus({|| RunReport() }, cTitulo)
+		
+	ENDIF
+		
+RETURN
+
+
+STATIC PROCEDURE RunReport()
+
+LOCAL aArea     := GetArea()
+LOCAL aStruct   := {}
+LOCAL cQuery
+LOCAL cArquivo  := "FATURA.DOT"
+LOCAL cDirTmp
+LOCAL cDirOri
+LOCAL cEnvServ  := GetEnvServer()
+LOCAL cIniFile  := GetADV97()
+LOCAL cRootPath := GetPvProfString(cEnvServ,"RootPath","",cIniFile)
+
+
+	// Define o caminho do documento origem
+	If Rat("\",cRootPath) == Len(Alltrim(cRootPath))
+		cRootPath := Substr(cRootPath,1,Len(Alltrim(cRootPath))-1)
+	Endif
+	cDirOri := "\FISCAL\"
+	
+	// Define o caminho do diretorio temporario
+	IF .NOT. EMPTY( GETENV( "TMP" ) )
+		cDirTmp := IIF( LEN( DIRECTORY( GETENV( "TMP" ) + "*.*", "D" ) ) > 0, GETENV( "TMP" ), "\" + CURDIR() + "\" )
+	ELSE
+		cDirTmp := GETENV( "TMP" )
+	ENDIF
+	cDirTmp += IIF( RIGHT( ALLTRIM( cDirTmp ), 1 ) != "\", "\", "" )
+	cDirTmp := STRTRAN( cDirTmp, "\\", "\" )
+	
+	
+	// Carrega a Estrutura da tabela SE1
+	DBSelectArea("SX3")
+	SX3->( DBSetOrder(1) )
+	SX3->( DBSeek("SE1") )
+	WHILE SX3->( .NOT. EOF() ) .AND. SX3->X3_ARQUIVO == "SE1"
+		AADD( aStruct, { SX3->X3_CAMPO, SX3->X3_TIPO, SX3->X3_TAMANHO, SX3->X3_DECIMAL } )
+		SX3->( DBSkip() )
+	ENDDO
+	
+	cQuery	:=	"SELECT *"
+	cQuery	+=	" FROM " + RetSqlName("SE1")
+	cQuery	+=	" WHERE E1_FILIAL = '"+ xFilial("SE1") +"' AND E1_NUM >= '"+ MV_PAR01 +"' AND E1_NUM <= '"+ MV_PAR02 +"' AND"
+	cQuery	+=	" E1_PREFIXO = '"+ MV_PAR03 +"' AND D_E_L_E_T_ <> '*'"
+	cQuery	+=	" ORDER BY E1_FILIAL, E1_NUM"
+	
+	DbUseArea(.T.,'TOPCONN',TCGenQry(,,cQuery),"TMP",.t.,.t.)
+	
+	FOR nPos := 1 TO LEN( aStruct )
+		IF aStruct[ nPos, 2] <> 'C'
+			TCSetField( 'TMP', aStruct[ nPos, 1], aStruct[ nPos, 2], aStruct[ nPos, 3], aStruct[ nPos, 4] )
+		ENDIF
+	NEXT
+	
+	
+	WHILE TMP->( .NOT. EOF() )
+		
+		CpyS2T( cDirOri + cArquivo, cDirTmp, .T. )
+		
+		IF FILE( cDirTmp + cArquivo )
+			
+			BeginMsOle()
+			
+			oWord := OLE_CreateLink('TMsOleWord97')// Cria link como Word
+			
+			OLE_OpenFile( oWord, cDirTmp + cArquivo, .F., "", "" )
+			
+			OLE_SetDocumentVar( oWord, "wdbEmpresa1", ALLTRIM( SM0->M0_NOMECOM ) ) // Nome da Empresa
+			OLE_SetDocumentVar( oWord, "wdbEndereco", ALLTRIM( SM0->M0_ENDCOB ) ) // Endereco
+			OLE_SetDocumentVar( oWord, "wdbBairro", ALLTRIM( SM0->M0_BAIRCOB ) ) // Bairro
+			OLE_SetDocumentVar( oWord, "wdbCidade", ALLTRIM( SM0->M0_CIDCOB ) ) // Cidade
+			OLE_SetDocumentVar( oWord, "wdbCEP", ALLTRIM( SM0->M0_CEPCOB ) )   // Cep
+			OLE_SetDocumentVar( oWord, "wdbUF", ALLTRIM( SM0->M0_ESTCOB ) )   // Estado
+			OLE_SetDocumentVar( oWord, "wdbCNPJ", ALLTRIM( SM0->M0_CGC ) )   // Estado
+			
+			OLE_SetDocumentVar( oWord, "wdbDtaEmissao", TRANSFORM( TMP->E1_EMISSAO, X3Picture("E1_EMISSAO") ) )   // Data da Emissao
+			
+			IF SA1->( DBSetOrder(1), DBSeek( xFilial("SA1") + TMP->E1_CLIENTE + TMP->E1_LOJA ) )
+				
+				OLE_SetDocumentVar( oWord, "wdbNomeCli", TRANSFORM( ALLTRIM( SA1->A1_NOME ), X3Picture("A1_NOME") ) )  // Nome do CLiente
+				OLE_SetDocumentVar( oWord, "wdbEndCli", TRANSFORM( ALLTRIM( SA1->A1_END ), X3Picture("A1_END") ) )     // Endereco do Cliente
+				OLE_SetDocumentVar( oWord, "wdbCepCli", TRANSFORM( ALLTRIM( SA1->A1_CEP ), X3Picture("A1_CEP") ) )     // Cep do Cliente
+				OLE_SetDocumentVar( oWord, "wdbMunCli", TRANSFORM( ALLTRIM( SA1->A1_MUN ), X3Picture("A1_MUN") ) )     // Municipio do Cliente
+				OLE_SetDocumentVar( oWord, "wdbUFCli", TRANSFORM( ALLTRIM( SA1->A1_EST ), X3Picture("A1_EST") ) )      // Estado do Cliente
+				OLE_SetDocumentVar( oWord, "wdbCNPJCli", TRANSFORM( ALLTRIM( SA1->A1_CGC ), X3Picture("A1_CGC") ) )    // CNPJ do Cliente
+				OLE_SetDocumentVar( oWord, "wdbIECli", TRANSFORM( ALLTRIM( SA1->A1_INSCR ), X3Picture("A1_INSCR") ) )  // Incricao Estadual do Cliente
+				
+			ENDIF
+			
+			OLE_SetDocumentVar( oWord, "wdbVencimento", TRANSFORM( TMP->E1_VENCTO, X3Picture("E1_VENCTO") ) )        // Vencimento da Fatura
+			
+			IF SC6->( DBSetOrder(1), DBSeek( xFilial("SC6") + TMP->E1_NUM ) )
+				OLE_SetDocumentVar( oWord, "wdbQtd", TRANSFORM( ALLTRIM( SC6->C6_QTDVEN ), X3Picture("C6_QTDVEN") ) )  // Quantidade Vendida
+				IF SB1->( DBSetOrder(1), DBSeek( xFilial("SB1") + TMP->C6_PRODUTO ) )
+					OLE_SetDocumentVar( oWord, "wdbDescricao", TRANSFORM( ALLTRIM( SB1->B1_DESC ), X3Picture("B1_DESC") ) ) // Descricao do Produto
+				ENDIF
+				OLE_SetDocumentVar( oWord, "wdbPreUni", TRANSFORM( ALLTRIM( SC6->C6_PRCVEN ), X3Picture("C6_PRCVEN") ) )  // Preco de Venda
+				OLE_SetDocumentVar( oWord, "wdbPreTotal", TRANSFORM( ALLTRIM( SC6->C6_VALOR ), X3Picture("C6_VALOR") ) )  // Valor total da Venda
+			ENDIF
+			
+			OLE_SetDocumentVar( oWord, "wdbTotal", TRANSFORM( TMP->E1_VALOR, X3Picture("E1_VALOR") ) )               // Total da Fatura
+			
+			OLE_SetDocumentVar( oWord, "wdbEmpresa2", ALLTRIM( SM0->M0_NOMECOM ) )                                   // Nome da Empresa
+			
+			OLE_SetDocumentVar( oWord, "wdbFatura", TRANSFORM( ALLTRIM( TMP->E1_FATURA ), X3Picture("E1_FATURA") ) ) // Codigo da Fatura
+			
+			OLE_UpdateFields( oWord )
+			
+			OLE_PrintFile( oWord,"ALL",,,)
+			
+			OLE_CloseLink(oWord)
+			
+			FERASE( cDirTmp + cArquivo )
+			
+		ENDIF
+		
+		TMP->( DBSkip() )
+		
+	ENDDO
+	
+	TMP->( DBCloseArea() )
+	
+	RestArea(aArea)
+				
+RETURN	
+
