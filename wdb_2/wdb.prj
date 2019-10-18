@@ -1,0 +1,72 @@
+Group WDB
+   Version=7.0
+   VSSDB=
+   HasProperties=1
+   Properties
+      BeforeApply=
+      AfterApply=
+      Icon=
+      ID=
+      Version=
+      PalmName=
+      OutPut=
+   End
+   ProjectsCount=1
+   Project Novo Projeto
+      FoldersCount=6
+      Folder CUSTOS
+         VSSPath=Fontes
+         FilesCount=3
+         File \WDB\CUSTOS\CC.PRW
+             Type=T
+         End
+         File \WDB\CUSTOS\CCJOB.PRW
+             Type=T
+         End
+         File \WDB\CUSTOS\PLANO.PRW
+             Type=T
+         End
+      End
+      Folder Definições
+         VSSPath=Definições
+         FilesCount=1
+         File \WDB\FATURAMENTO\MT410BRW.PRW
+             Type=T
+         End
+      End
+      Folder FATURAMENTO
+         VSSPath=Nova Pasta3
+         FilesCount=4
+         File \WDB\FATURAMENTO\FATURA.PRW
+             Type=T
+         End
+         File \WDB\FATURAMENTO\MT410TOK.PRW
+             Type=T
+         End
+         File \WDB\FATURAMENTO\MT410BRW.PRW
+             Type=T
+         End
+         File \WDB\FATURAMENTO\MA410DEL.PRW
+             Type=T
+         End
+      End
+      Folder JOB
+         VSSPath=Nova Pasta4
+         FilesCount=1
+         File \WDB\JOB\JOBAGENDA.PRW
+             Type=T
+         End
+      End
+      Folder FUNCOES
+         VSSPath=Nova Pasta5
+         FilesCount=1
+         File \WDB\FUNCOES.PRW
+             Type=T
+         End
+      End
+      Folder COMPRAS
+         VSSPath=Nova Pasta6
+         FilesCount=0
+      End
+   End
+End
