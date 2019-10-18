@@ -1,0 +1,53 @@
+Group WDB
+   Version=7.0
+   VSSDB=
+   HasProperties=1
+   Properties
+      BeforeApply=
+      AfterApply=
+      Icon=
+      ID=
+      Version=
+      PalmName=
+      OutPut=
+   End
+   ProjectsCount=1
+   Project Novo Projeto
+      FoldersCount=2
+      Folder WDB
+         VSSPath=Fontes
+         FilesCount=0
+      End
+      Folder FABRICA
+         VSSPath=Definições
+         FilesCount=9
+         File \my projects\FABRICA\A410CONS.prw
+             Type=T
+         End
+         File \my projects\FABRICA\KZ_EmlTc.PRW
+             Type=T
+         End
+         File \my projects\FABRICA\KZ_FTlPd.prw
+             Type=T
+         End
+         File \my projects\FABRICA\M410LIOK.prw
+             Type=T
+         End
+         File \my projects\FABRICA\M440STTS.prw
+             Type=T
+         End
+         File \my projects\FABRICA\MA440VLD.prw
+             Type=T
+         End
+         File \my projects\FABRICA\MT410TOK.prw
+             Type=T
+         End
+         File \my projects\FABRICA\MTA410T.prw
+             Type=T
+         End
+         File \my projects\FABRICA\MTA440AC.prw
+             Type=T
+         End
+      End
+   End
+End

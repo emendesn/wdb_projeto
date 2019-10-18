@@ -1,0 +1,1923 @@
+//#INCLUDE "FINA010.CH"
+//#INCLUDE "CTBA120.CH"
+#INCLUDE "FONT.CH"			
+#INCLUDE "PROTHEUS.CH"
+
+//Static aStackTMP
+Static cCodJOB	 := "0"
+Static cGrupo	 := "0"
+Static nRadMenu1 := 1
+/*/
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ WDBORC   ³ Autor ³ Murilo Swistalski     ³ Data ³13.04.10  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Programa de Inclusao de Orcamentos Individuais             ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Sintaxe   ³ Void O415Inclui(ExpC1,ExpN1,ExpN2,ExpX1,[ExpC2])           ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+/*/
+USER FUNCTION WDBORC()
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Declaracao das variaveis                                      ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+Local aCores := {	{ 'SZ4->Z4_PAI=="0" .and. SZ4->Z4_STATUS=="1" .and. SZ4->Z4_NUMPAI=="0     "' , 'BR_AMARELO' },; //Filho NAO agrupado ULT. versao
+					{ 'SZ4->Z4_PAI=="0" .and. SZ4->Z4_STATUS=="1" .and. SZ4->Z4_NUMPAI<>"0     "' , 'BR_VERMELHO'},; //Filho AGRUPADO ULT. versao
+					{ 'SZ4->Z4_PAI=="0" .and. SZ4->Z4_STATUS=="0" .and. SZ4->Z4_NUMPAI=="0     "' , 'BR_LARANJA'},;  //Filho NAO agrupado versao ANTERIOR
+					{ 'SZ4->Z4_PAI=="0" .and. SZ4->Z4_STATUS=="0" .and. SZ4->Z4_NUMPAI<>"0     "' , 'BR_MARROM'},;   //Filho AGRUPADO versao ANTERIOR
+					{ 'SZ4->Z4_PAI=="0" .and. SZ4->Z4_STATUS=="1" .and. SZ4->Z4_NUMPAI<>"0     "' , 'BR_VERMELHO'},; //Filho AGRUPADO ULT. versao
+					{ 'SZ4->Z4_PAI=="1" .and. SZ4->Z4_STATUS=="1"' , 'BR_VERDE' },;									  //PAI ULTIMA versao
+					{ 'SZ4->Z4_PAI=="1" .and. SZ4->Z4_STATUS=="0"' , 'BR_CINZA' }}									  //PAI versao ANTERIOR
+
+Private aRotina := {	{"Pesquisar"	, "AxPesqui"	, 0 , 1 },;
+						{"Visualizar"	, "U_ORCAMENTO" , 0 , 2 },; //Visualizar Orcamentos Individuais e Agrupados
+						{"Incluir"		, "U_ORCAMENTO" , 0 , 3 },; //Incluir Orcamento Individual
+						{"Copiar"		, "U_ORCCopiar" , 0 , 4 },; //Copiar Orcamento Individual
+						{"Excluir"		, "U_ORCAMENTO" , 0 , 5 },; //Nao eh permitido excluir
+						{"Legenda"		, "U_LegORC" 	, 0 , 6 },; //Legenda
+						{"Alterar"		, "U_ORCAMENTO"	, 0 , 7 },; //Nao eh permitido alterar
+						{"Consolidar"	, "U_ORCConsol"	, 0 , 8 },; //Consolidar: agrupar orcamentos individuais
+						{"Desativar"	, "U_ORCCanc"	, 0 , 9 } } //Cancela Orcamento Indivual NAO AGRUPADO
+
+Private cCadastro := OemToAnsi("Cadastro de Orçamentos Controlados - Individual")
+Private oCliente
+Private oTotal
+Private cCliente := ""
+Private nTotal := 0
+Private bCampo := {|nField| FieldName(nField) }
+Private aSize := {}
+Private aInfo := {}
+Private aObj := {}
+Private aPObj := {}
+Private aPGet := {}
+
+Private oGet
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Retorna a area util das janelas Protheus³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+aSize := MsAdvSize()
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Será utilizado três áreas na janela                                  ³
+//³     1 - Enchoice, sendo 80 pontos pixel                             ³
+//³     2 - MsGetDados, o que sobrar em pontos pixel eh para este objeto³
+//³     3 - Rodape que eh a propria janela, sendo 15 pontos pixel       ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+AADD( aObj, { 100, 080, .T., .F. })
+AADD( aObj, { 100, 100, .T., .T. })
+AADD( aObj, { 100, 015, .T., .F. })
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Calculo automatico das dimensoes dos objetos  (altura/largura) em pixel³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+aInfo := { aSize[1], aSize[2], aSize[3], aSize[4], 3, 3 }
+aPObj := MsObjSize( aInfo, aObj )
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Calculo automatico de dimensoes dos objetos MsGet³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+aPGet := MsObjGetPos( (aSize[3] - aSize[1]), 315, { {004, 024, 240, 270} } )
+MBrowse( ,,,,"SZ4",/* aFixe */,"Z4_NUM",/* nPar08 */,/* cFun */,/* nClickDef */,aCores,;
+		 /* cTopFun */, /* cBotFun */, /* nPar14 */, /* bInitBloc */,/* lNoMnuFilter */, /* lSeeAll */, /* lChgAll */)
+
+Return(.T.)
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ LegORC   ³ Autor ³ Murilo Swistalski     ³ Data ³27/04/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Funcao de Legendas de Orcamentos de Controle				  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function LegORC()
+
+Local aLegenda := {}
+
+AADD(aLegenda,{"BR_AMARELO"		, OemToAnsi("Orç.Individual - Não Consolidado Ativo") })
+AADD(aLegenda,{"BR_LARANJA"		, OemToAnsi("Orç.Individual - Não Consolidado Inativo") })
+AADD(aLegenda,{"BR_VERMELHO"	, OemToAnsi("Orç.Individual - Consolidado Ativo") })
+AADD(aLegenda,{"BR_MARROM"		, OemToAnsi("Orç.Individual - Consolidado Inativo") })
+AADD(aLegenda,{"BR_VERDE"		, OemToAnsi("Orç.Consolidador - Ativo") })
+AADD(aLegenda,{"BR_CINZA"		, OemToAnsi("Orç.Consolidador - Inativo") })
+
+BrwLegenda(cCadastro, "Legenda", aLegenda)
+
+Return
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ ORCAMENTO  ³ Autor ³ Murilo Swistalski ³ Data ³28/04/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Funcao de Orcamento Controlado Individual				³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB										³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function ORCAMENTO( cAlias, nReg, nOpc )
+Local oDlg
+//Local oGet
+Local nX := 0
+Local nOpcA := 0
+Local cCadastro := OemToAnsi("Cadastro de Orçamentos Controlados Individuais")
+Local oRadMenu1
+Local aCampos := {}
+Local oImposto
+Local cImposto := "+ " + Alltrim(Str(GetNewPar("MV_WDBVIMP",3))) + "%"
+
+//Private oGet
+Private aHeader := {}
+Private aCOLS := {}
+Private aGets := {}
+Private aTela := {}
+
+dbSelectArea( cAlias )
+dbSetOrder(1)
+
+For nX := 1 To FCount()
+	M->&( Eval( bCampo, nX ) ) := CriaVar( FieldName( nX ), .T. )
+Next nX
+
+MontaORC( nOpc )
+
+If nOpc <> 4
+	aCampos := {"Z4_CODJOB","Z4_GRUPO","Z4_BV"}
+Else
+	aCampos := {"Z4_BV"}
+EndIf
+
+DEFINE MSDIALOG oDlg TITLE cCadastro FROM aSize[7],aSize[1] TO aSize[6],aSize[5] OF oMainWnd PIXEL
+EnChoice( cAlias, nReg, nOpc,/*aCRA*/,/*cLetra*/,/*cTexto*/,/*aAcho*/,aPObj[1],aCampos,/*nModelo*/, /*nColMens*/, /*cMensagem*/, /*cTudoOk*/, oDlg, /*lF3*/, /*lMemoria*/, /*lColumn*/, /*caTela*/, /*lNoFolder*/, /*lProperty*/)
+ 
+//Opcao de mostrar Descricao Tecnica ou Descricao Comercial
+@ 052, 160 RADIO oRadMenu1 VAR nRadMenu1 ITEMS "Mostrar Texto Descr. Comercial","Mostrar Texto Descr. Técnica" SIZE 100, 050 OF oDlg COLOR 0, 16777215 PIXEL
+@ 052, 073 MSGET oImposto VAR cImposto SIZE 015, 007 OF oDlg COLORS 0, 13882065 READONLY PIXEL
+
+// Atualizacao do nome do cliente
+@ aPObj[3,1],aPGet[1,1] SAY "Cliente: " SIZE 70,7 OF oDlg PIXEL
+@ aPObj[3,1],aPGet[1,2] MSGET oCliente VAR cCliente SIZE 98,7 OF oDlg READONLY PIXEL
+
+// Atualizacao do total
+@ aPObj[3,1],aPGet[1,3] SAY IIF(SZ4->Z4_PAI=="1" .And. nOpc<>3," Valor Total: ","Sub-Total: ") SIZE 70,7 OF oDlg PIXEL
+@ aPObj[3,1],aPGet[1,4] MSGET oTotal VAR nTotal PICT "@E 9,999,999,999.99" SIZE 70,7 OF oDlg READONLY PIXEL
+
+cCliente := ""
+nTotal	 := ""   //aCols[n,GdFieldPos("Z5_UM")] := SB1->B1_UM
+If nOpc <> 3
+	If nOpc == 4
+		M->Z4_CODJOB	:= (cAlias)->Z4_CODJOB
+		cCodJob			:= (cAlias)->Z4_CODJOB
+		M->Z4_GRUPO		:= (cAlias)->Z4_GRUPO
+		cGrupo			:= (cAlias)->Z4_GRUPO
+		M->Z4_CLIENTE	:= (cAlias)->Z4_CLIENTE
+		M->Z4_LOJA		:= (cAlias)->Z4_LOJA
+		M->Z4_VERSAO	:= Versao((cAlias)->Z4_CODJOB,(cAlias)->Z4_GRUPO)
+		M->Z4_BV		:= (cAlias)->Z4_BV
+	EndIf
+	Mostra()
+EndIf
+
+oGet := MSGetDados():New(aPObj[2,1],aPObj[2,2],aPObj[2,3],aPObj[2,4],nOpc,;
+						 "U_LinhaOk()",".T."/*cTudoOk*/,"+Z5_ITEM"/*cIniCpos*/,.T./*lDelete*/,;
+						 /*aAlter*/, /*uPar1*/, /*lEmpty*/, /*nMax*/, /*cFieldOk*/,/*cSuperDel*/, /*uPar2*/, /*cDelOk*/, /*oWnd*/)
+ACTIVATE MSDIALOG oDlg ON INIT ;
+	EnchoiceBar(oDlg, {|| nOpcA := 1, oDlg:End() }, {|| oDlg:End() })
+
+If nOpcA == 1 .And. (nOpc == 3 .Or. nOpc == 4) //Incluir
+
+	lGrava := .F.	
+	//Verifica se Cod JOB e Grupo foram informados
+	If Alltrim(M->Z4_CODJOB) == "" .Or. !(M->Z4_GRUPO$"123456")
+		If Alltrim(M->Z4_CODJOB) == ""
+			MsgStop("JOB não foi Selecionado!")
+		ElseIf !(M->Z4_GRUPO$"123456")
+			MsgStop("Grupo de Produtos não foi Selecionado!")
+		EndIf
+	Else		
+		For i:=1 to Len(aCols)
+		    lGrava := U_LinhaOk(i)
+		    If !lGrava
+		    	Exit
+		    EndIf
+		Next
+		If lGrava
+			GravaOrc(nOpc)
+		EndIf	
+	EndIf
+
+//ElseIf nOpcA == 1 .And. nOpc == 4 //Alterar
+//	MsgStop(OemToAnsi("Não é permitido Alterar um Orçamento Salvo!")+chr(13)+;
+//			OemToAnsi("Crie um novo orçamento ou copie de um existente!"),OemToAnsi("Alteração Negada"))
+ElseIf nOpcA == 1 .And. nOpc == 5 //Excluir
+	MsgStop(OemToAnsi("Não é permitido Excluir um Orçamento Salvo!"),OemToAnsi("Exclusão Negada"))
+Endif 
+
+cGrupo := "0"
+
+Return
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ MontaORC   ³ Autor ³ Murilo Swistalski   ³ Data ³28/04/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Monta aHeader e aCols dos arquivos Temporarios             ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+Static Function MontaORC( nOpc )
+Local nNUM	 := SZ4->Z4_NUM
+Local cChave := nNUM
+Local cAlias := "SZ5"
+Local nI	 := 0
+
+dbSelectArea("SX3")
+dbSetOrder(1)
+dbSeek(cAlias)
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Monta aHeader³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+While !EOF() .And. X3_ARQUIVO == cAlias
+	If X3Uso(X3_USADO) .And. cNivel >= X3_NIVEL
+		AADD( aHeader, { Trim( X3Titulo() ),;
+						X3_CAMPO,;
+						X3_PICTURE,;
+						X3_TAMANHO,;
+						X3_DECIMAL,;
+						X3_VALID,;
+						X3_USADO,;
+						X3_TIPO,;
+						X3_ARQUIVO,;
+						X3_CONTEXT})
+	Endif
+	dbSkip()
+End
+dbUnLock()
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Monta aCols  ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+If nOpc <> 3
+	dbSelectArea( "SZ5" )
+	SZ5->( dbSetOrder(1) )
+	SZ5->( dbSeek( xFilial( "SZ5" ) + cChave ) )
+
+	While !EOF() .And. xFilial( "SZ5" ) + cChave == SZ5->Z5_FILIAL + SZ5->Z5_NUMZ4
+	
+		AADD( aCOLS, Array( Len( aHeader ) + 1 ) )
+		
+		For nI := 1 To Len( aHeader )
+			If aHeader[nI,10] == "V"
+				aCOLS[Len(aCOLS),nI] := CriaVar(aHeader[nI,2],.T.)
+			Else
+				aCOLS[Len(aCOLS),nI] := FieldGet(FieldPos(aHeader[nI,2]))
+			Endif
+		Next nI
+		
+		aCOLS[Len(aCOLS),Len(aHeader)+1] := .F.
+		dbSkip()
+		
+	End
+	
+Else
+
+	AADD( aCOLS, Array( Len( aHeader ) + 1 ) )
+	
+	For nI := 1 To Len( aHeader )
+		aCOLS[1, nI] := CriaVar( aHeader[nI, 2], .T. )
+	Next nI
+	
+	aCOLS[1, GdFieldPos("Z5_ITEM")] := "01"
+	aCOLS[1, Len( aHeader )+1 ] := .F.
+	
+Endif
+
+Return
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ TrataJOB ³ Autor ³ Murilo Swistalski     ³ Data ³29/04/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Trata variavel e retorna variavel valida					  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB										  ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+User Function TrataJOB(uVariavel)
+Local aArea := GetArea()
+Local lRet := .T.
+
+M->Z4_VERSAO := ""
+
+If Val(uVariavel) == 0 .Or. Val(uVariavel) == Nil
+	uVariavel := Alltrim(uVariavel)
+Else
+	uVariavel := StrZero(Val(uVariavel),9)
+EndiF
+
+dbSelectArea("SZ1")
+SZ1->( dbSetOrder(1) )
+If uVariavel <> "" .And. SZ1->( dbSeek( xFilial("SZ1") + uVariavel ))
+	cCodJob := uVariavel
+	M->Z4_CODJOB := uVariavel
+	M->Z4_CLIENTE := SZ1->Z1_CLIENTE
+	M->Z4_LOJA := SZ1->Z1_LOJA
+	
+	dbSelectArea("SA1")
+	dbSeek(xFilial("SA1") + SZ1->Z1_CLIENTE + SZ1->Z1_LOJA)
+	cCliente := SA1->A1_NOME
+	
+	//verifica se existe grupo de produtos preenchido
+	If cGrupo $ "123456"
+		M->Z4_VERSAO := Versao(uVariavel,cGrupo)
+	EndIf
+Else
+	MsgStop(OemToAnsi("JOB informado não foi encontrado!"),OemToAnsi("Impossível Continuar"))
+	M->Z4_CODJOB := ""
+//	M->Z4_ := ""
+	cCodJob := ""
+	uVariavel := ""
+	lRet := .F.
+EndIf
+
+LimpaArray()
+             
+RestArea(aArea)
+Return lRet //uVariavel 
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ValidaJOB ³ Autor ³ Murilo Swistalski     ³ Data ³30/04/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Valida numeracao do JOB                                    ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB										  ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+User Function ValidaJOB(cJOB)
+Local aArea := SZ1->(GetArea())
+
+cJoB:=StrZero(Val(cJob),TamSX3("Z1_CODJOB")[1])
+If dbSeek(xFilial("SZ1")+cJob)
+	lRet := .F.
+Else
+	lRet := .T.
+EndIf
+
+RestArea(aArea)
+Return lRet
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³TrataGrupo³ Autor ³ Murilo Swistalski     ³ Data ³30/04/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Trata Grupo de Produtos                                    ³±±
+±±³			 ³	- Cada orcamento individual tem apenas 1 Grupo de produto ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB										  ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+User Function TrataGrupo(nGrupo)
+Local aArea := GetArea()
+Local lRet := .T.
+
+M->Z4_VERSAO := ""
+
+//verifica se JOB e Grupo estao preenchidos
+If nGrupo==""
+	MsgStop(OemToAnsi("Campo Obrigatório"))
+	M->Z4_GRUPO := ""
+	M->Z4_VERSAO := ""
+	lRet := .F.
+EndIf
+If nGrupo $ "123456"
+	cGrupo := nGrupo
+	If cCodJob <> "" .and. cGrupo $ "123456"
+		dbSelectArea("SZ4")
+		SZ4->( dbSetOrder(1) )
+		If SZ4->( dbSeek( xFilial("SZ4") + cCodJob + cGrupo ))
+			M->Z4_VERSAO := Versao(cCodJob,cGrupo)
+		Else
+			M->Z4_VERSAO := "A"
+		EndIf	
+	EndIf
+Else
+	//Verifica se eh ORCAMENTO AGRUPADO -> Z4_GRUPO = 0
+	dbSelectArea("SZ4")
+	SZ4->( dbSetOrder(1) )
+	If SZ4->( dbSeek( xFilial("SZ4") + cCodJob + "0" ))
+		M->Z4_VERSAO := Versao(cCodJob,cGrupo)
+	Else
+		MsgStop(OemToAnsi("Grupo inválido!"))
+		M->Z4_GRUPO := ""
+		lRet := .F.
+	EndIf
+EndIf	
+
+LimpaArray()
+ 
+RestArea(aArea)
+Return lRet
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ Versao   ³ Autor ³ Murilo Swistalski     ³ Data ³30/04/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Mostra versao correta do Orcamento Individual			  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB										  ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function Versao(cCodJob,cGrupo)
+Local cVersao	:= "A"
+Local nCont		:= 0
+
+clQry := "SELECT Z4_VERSAO "
+clQry += "FROM "+RetSqlName("SZ4")+" SZ4 "
+clQry += "WHERE Z4_CODJOB = '" + Alltrim(cCodJOB) + "'"
+clQry += "	AND Z4_GRUPO = '" + Alltrim(cGrupo) + "'"
+clQry += "	AND D_E_L_E_T_ = ' ' "
+clQry += "ORDER BY Z4_VERSAO DESC"
+clQry := ChangeQuery( clQry )
+dbUseArea( .T., "TopConn", TCGenQry(,,clQry), "QRY", .F., .F. )
+                  
+QRY->( dbEval( {|| nCont++ } ) )
+QRY->( dbGoTop() )
+
+If QRY->( !Eof() )
+	cVersao := CHR( ASC( QRY->Z4_VERSAO ) +1)
+EndIf
+
+DbSelectArea("QRY")
+QRY->(DbCloseArea())
+
+Return cVersao
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³LimpaArray³ Autor ³ Murilo Swistalski     ³ Data ³03/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Reinicia os Array aHeader e aCols						  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB										  ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function LimpaArray()
+
+ASize(aCols,0)
+
+AADD( aCOLS, Array( Len( aHeader ) + 1 ) )
+
+For nI := 1 To Len( aHeader )
+	aCOLS[1, nI] := CriaVar( aHeader[nI, 2], .T. )
+Next nI        		
+
+aCOLS[1, GdFieldPos("Z5_ITEM")] := "01"
+aCOLS[1, Len( aHeader )+1 ] := .F.
+
+//aCols[1]:={xFilial("SZ5"),Space(15),Space(30),Space(30),Space(02),0,0,0,0,Space(3),0,0,0,Space(80),.F.}
+oGet:ForceRefresh()
+Return
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ LinhaOk    ³ Autor ³ Murilo Swistalski   ³ Data ³28/04/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Rotina para atualizar a variavel com o total dos itens	  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function LinhaOk(x)
+Local lRet := .T.
+Default x := 0
+nTotal := 0
+
+If x == 0 //Verificao PADRAO da Linha
+	If !aCols[n,15] //13
+
+		If Empty(aCOLS[n,GdFieldPos("Z5_PRODUTO")]) .And. lRet
+			MsgStop(OemToAnsi("Campo PRODUTO preenchimento obrigatório"))
+			lRet := .F.
+		ElseIf Empty(aCOLS[n,GdFieldPos("Z5_DESCR")]) .And. lRet
+			MsgStop(OemToAnsi("Campo DESCRICAO COMERCIAL obrigatório"))
+			lRet := .F.
+		ElseIf Empty(aCOLS[n,GdFieldPos("Z5_QUANT")]) .And. lRet
+			MsgAlert(OemToAnsi("Campo QUANTIDADE preenchimento obrigatório",cCadastro))
+			lRet := .F.
+		ElseIf Empty(aCOLS[n,GdFieldPos("Z5_PRECO")]) .And. lRet
+			MsgAlert(OemToAnsi("Campo PRECO UNITARIO preenchimento obrigatório",cCadastro))
+			lRet := .F.			
+		ElseIf Empty(aCOLS[n,GdFieldPos("Z5_TOTAL")]) .And. lRet
+			MsgStop(OemToAnsi("Campo VALOR TOTAL preenchimento obrigatório"))
+			lRet := .F.		
+		ElseIf Empty(aCOLS[n,GdFieldPos("Z5_TES")]) .And. lRet
+			MsgStop(OemToAnsi("Campo TES preenchimento obrigatório"))
+			lRet := .F.
+		EndIf
+		
+		If lRet
+			For i := 1 To Len( aCOLS )		
+				If aCOLS[i,15] //13
+					Loop
+				Else
+					nTotal += aCOLS[i,GdFieldPos("Z5_TOTAL")]
+				Endif
+			Next nI
+			oTotal:Refresh()
+		EndIf
+	EndIf
+
+Else
+	//Verificacao de Linha INDUZIDA
+	If !aCols[x,15] //13
+		If Empty(aCOLS[x,GdFieldPos("Z5_PRODUTO")]) .And. lRet
+			MsgStop(OemToAnsi("Campo PRODUTO preenchimento obrigatório"))
+			lRet := .F.
+		ElseIf Empty(aCOLS[x,GdFieldPos("Z5_DESCR")]) .And. lRet
+			MsgStop(OemToAnsi("Campo DESCRICAO COMERCIAL obrigatório"))
+			lRet := .F.
+		ElseIf Empty(aCOLS[x,GdFieldPos("Z5_QUANT")]) .And. lRet
+			MsgAlert(OemToAnsi("Campo QUANTIDADE preenchimento obrigatório",cCadastro))
+			lRet := .F.
+		ElseIf Empty(aCOLS[x,GdFieldPos("Z5_PRECO")]) .And. lRet
+			MsgAlert(OemToAnsi("Campo PRECO UNITARIO preenchimento obrigatório",cCadastro))
+			lRet := .F.			
+		ElseIf Empty(aCOLS[x,GdFieldPos("Z5_TOTAL")]) .And. lRet
+			MsgStop(OemToAnsi("Campo VALOR TOTAL preenchimento obrigatório"))
+			lRet := .F.		
+		ElseIf Empty(aCOLS[x,GdFieldPos("Z5_TES")]) .And. lRet
+			MsgStop(OemToAnsi("Campo TES preenchimento obrigatório"))
+			lRet := .F.
+		EndIf
+	EndIf
+EndIf
+
+Return lRet
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ O415Prod   ³ Autor ³ Murilo Swistalski   ³ Data ³28/04/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Validacao do Produto										  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function O415Prod()
+Local aArea	:= GetArea()
+Local lRet	:= .F.
+
+dbSelectArea("SB1")
+dbSetOrder(1)
+
+If SB1->( dbSeek( xFilial("SB1") + M->Z5_PRODUTO) ) .And. !(AllTrim(M->Z5_PRODUTO) == "")
+	M->Z5_PRODUTO := SB1->B1_COD
+	If SB1->B1_GRUPO == "100"+cGrupo
+		If nRadMenu1 == 1
+			aCols[n,GdFieldPos("Z5_DESCR")] := SB1->B1_DESCR
+		Else
+			aCols[n,GdFieldPos("Z5_DESCR")] := SB1->B1_DESC
+		EndIf
+		aCols[n,GdFieldPos("Z5_UM")] := SB1->B1_UM
+		aCols[n,GdFieldPos("Z5_PRECO")] := IIF(SB1->(FieldPos("B1_VALLOC")) > 0, B1_VALLOC, SB1->B1_PRV1)
+		aCols[n,GdFieldPos("Z5_TES")] := SB1->B1_TS
+		
+		//Demonstracao
+		aCols[n,GdFieldPos("Z5_NUMDIAS")] := IIF(SZ1->Z1_DTEVFIM - SZ1->Z1_DTEVINI + 1 > 0, SZ1->Z1_DTEVFIM - SZ1->Z1_DTEVINI + 1, aCols[n,GdFieldPos("Z5_NUMDIAS")])
+		//BV
+		aCols[n,GdFieldPos("Z5_BV")] := M->Z4_BV
+		
+		lRet := .T.
+	Else
+		MsgStop(OemToAnsi("Produto selecionado não faz parte do Grupo Informado"))
+		lRet := .F.
+	EndIf
+Else
+	MsgStop(OemToAnsi("Produto não Encontrado!"))
+	lRet := .F.
+EndIf
+
+RestArea(aArea)
+Return(lRet) 
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ O415Quant  ³ Autor ³ Murilo Swistalski   ³ Data ³03/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Calcula o Valor Total pela Quantidade					  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function O415Quant()
+Local lRet		:= .T.
+Local nVlrTotA	:= 0
+Local nVlrTotB	:= 0
+Local nQuant	:= 0
+
+If Positivo(M->Z5_QUANT)
+	nVlrTotA := Round(M->Z5_QUANT * aCols[n,GdFieldPos("Z5_PRECO")] * aCols[n,GdFieldPos("Z5_NUMDIAS")],2)
+	
+	If aCols[n,GdFieldPos("Z5_DESCPER")] > 0
+		nVlrTotB := Round(nVlrTotA - ( nVlrTotA / ( 100 / aCols[n,GdFieldPos("Z5_DESCPER")] ) ),2)
+	Else
+		nVlrTotB := Round(nVlrTotA - aCols[n,GdFieldPos("Z5_DESCVAL")],2)
+	EndIf
+
+	If nVlrTotB > 0 .And. aCols[n,GdFieldPos("Z5_BV")] > 0
+		aCols[n,GdFieldPos("Z5_TOTAL")] := Round(nVlrTotB / ( ( 100 - ( aCols[n,GdFieldPos("Z5_BV")] + GetNewPar("MV_WDBVIMP",3) ) ) / 100 ),2)
+	Else	
+		aCols[n,GdFieldPos("Z5_TOTAL")] := nVlrTotB
+	EndiF
+    
+Else
+	M->Z5_TOTAL	:= 0
+	aCols[n,GdFieldPos("Z5_TOTAL")]	:= 0
+	lRet := .F.
+EndIf
+
+Return(lRet)
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ O415Preco  ³ Autor ³ Murilo Swistalski   ³ Data ³03/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Calcula o Valor Total pelo Valor Unitario				  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function O415Preco()
+Local lRet		:= .T.
+Local nVlrTotA	:= 0
+Local nVlrTotB	:= 0
+Local nValor	:= 0
+	
+//+++ Verificar Difenca entre M->Z5_PRECO e aCols[n,GdFieldPos("Z5_PRECO")]
+
+If Positivo(M->Z5_PRECO)
+	nVlrTotA := Round(aCols[n,GdFieldPos("Z5_QUANT")] * M->Z5_PRECO * aCols[n,GdFieldPos("Z5_NUMDIAS")],2)
+	
+	If aCols[n,GdFieldPos("Z5_DESCPER")] > 0
+		nVlrTotB := Round(nVlrTotA - ( nVlrTotA / ( 100 / aCols[n,GdFieldPos("Z5_DESCPER")] ) ),2)
+	Else
+		nVlrTotB := Round(nVlrTotA - aCols[n,GdFieldPos("Z5_DESCVAL")],2)
+	EndIf
+	If nVlrTotB > 0 .And. aCols[n,GdFieldPos("Z5_BV")] > 0
+		aCols[n,GdFieldPos("Z5_TOTAL")] := Round(nVlrTotB / ( ( 100 - ( aCols[n,GdFieldPos("Z5_BV")] + GetNewPar("MV_WDBVIMP",3) ) ) / 100 ),2)
+	Else
+		aCols[n,GdFieldPos("Z5_TOTAL")] := nVlrTotB
+	EndIf
+    
+Else
+//	M->Z5_TOTAL	:= 0
+	M->Z5_PRECO	:= 0
+	aCols[n,GdFieldPos("Z5_TOTAL")]	:= 0
+	lRet := .F.
+EndIf
+
+Return(lRet)
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ O415NumDias³ Autor ³ Murilo Swistalski   ³ Data ³28/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Calcula o Valor Total pela Quantidade de Dias			  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function O415NumDias()
+Local lRet		:= .T.
+Local nVlrTotA	:= 0
+Local nVlrTotB	:= 0
+Local nQuant	:= 0
+
+//+++ Verificar Difenca entre M->Z5_NUMDIAS e aCols[n,GdFieldPos("Z5_NUMDIAS")]
+
+If Positivo(M->Z5_NUMDIAS)
+	nVlrTotA := Round(aCols[n,GdFieldPos("Z5_QUANT")] * aCols[n,GdFieldPos("Z5_PRECO")] * M->Z5_NUMDIAS ,2)
+	
+	If aCols[n,GdFieldPos("Z5_DESCPER")] > 0
+		nVlrTotB := Round(nVlrTotA - ( nVlrTotA / ( 100 / aCols[n,GdFieldPos("Z5_DESCPER")] ) ),2)
+	Else
+		nVlrTotB := Round(nVlrTotA - aCols[n,GdFieldPos("Z5_DESCVAL")],2)
+	EndIf
+
+	If nVlrTotB > 0 .And. aCols[n,GdFieldPos("Z5_BV")] > 0
+		aCols[n,GdFieldPos("Z5_TOTAL")] := Round(nVlrTotB / ( ( 100 - ( aCols[n,GdFieldPos("Z5_BV")] + GetNewPar("MV_WDBVIMP",3) ) ) / 100 ),2)
+	Else
+		aCols[n,GdFieldPos("Z5_TOTAL")] := nVlrTotB
+	EndIf
+    
+Else
+//	M->Z5_TOTAL	:= 0
+	M->Z5_NUMDIAS	:= 0
+	aCols[n,GdFieldPos("Z5_TOTAL")]	:= 0
+	lRet := .F.
+EndIf
+
+Return(lRet)
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ O415BV	  ³ Autor ³ Murilo Swistalski   ³ Data ³28/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Calcula o Valor Total pelo Fator BV 						  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function O415BV()
+Local lRet		:= .T.
+Local nQuant	:= 0
+
+//+++ Verificar Difenca entre M->Z5_BV e aCols[n,GdFieldPos("Z5_BV")]
+
+If Positivo( M->Z5_BV )
+	nVlrTotA := Round(aCols[n,GdFieldPos("Z5_QUANT")] * aCols[n,GdFieldPos("Z5_PRECO")] * aCols[n,GdFieldPos("Z5_NUMDIAS")],2)
+	
+	If aCols[n,GdFieldPos("Z5_DESCPER")] > 0
+		nVlrTotB := Round(nVlrTotA - ( nVlrTotA / ( 100 / aCols[n,GdFieldPos("Z5_DESCPER")] ) ),2)
+	Else
+		nVlrTotB := Round(nVlrTotA - aCols[n,GdFieldPos("Z5_DESCVAL")],2)
+	EndIf
+	
+	If nVlrTotB > 0 .And. M->Z5_BV > 0
+		aCols[n,GdFieldPos("Z5_TOTAL")] := Round(nVlrTotB / ( ( 100 - ( M->Z5_BV + GetNewPar("MV_WDBVIMP",3) ) ) / 100 ),2)
+	Else
+		aCols[n,GdFieldPos("Z5_TOTAL")] := nVlrTotB
+	EndIf    
+Else
+//	M->Z5_TOTAL	:= 0
+	M->Z5_BV	:= 0
+	aCols[n,GdFieldPos("Z5_TOTAL")]	:= 0
+	lRet := .F.
+EndIf
+
+Return(lRet)
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ O415Total  ³ Autor ³ Murilo Swistalski   ³ Data ³03/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Calcula o Valor Total pelo Valor Unitario				  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function O415Total()
+Local lRet		:= .T.
+Local nVlrTotA	:= 0
+Local nVlrTotA	:= 0
+Local nTotal	:= 0
+
+//+++ Verificar Difenca entre M->Z5_TOTAL e aCols[n,GdFieldPos("Z5_TOTAL")]
+
+If Positivo(M->Z5_TOTAL)
+	nVlrTotA := Round(aCols[n,GdFieldPos("Z5_QUANT")] * aCols[n,GdFieldPos("Z5_PRECO")] * aCols[n,GdFieldPos("Z5_NUMDIAS")],2)
+	
+	If aCols[n,GdFieldPos("Z5_DESCPER")] > 0
+		nVlrTotB := Round(nVlrTotA - ( nVlrTotA / ( 100 / aCols[n,GdFieldPos("Z5_DESCPER")] ) ),2)
+	Else
+		nVlrTotB := Round(nVlrTotA - aCols[n,GdFieldPos("Z5_DESCVAL")],2)
+	EndIf
+	If nVlrTotB > 0 .And. aCols[n,GdFieldPos("Z5_BV")] > 0	
+		nTotal := Round(nVlrTotB / ( ( 100 - ( aCols[n,GdFieldPos("Z5_BV")] + GetNewPar("MV_WDBVIMP",3) ) ) / 100 ),2)
+	Else
+		nTotal := nVlrTotB
+	EndIf
+    
+	If !(nTotal == M->Z5_TOTAL)
+		MsgStop("Valor Total incorreto!")
+		lRet := .F.
+	EndIf
+Else
+	M->Z5_PRECO	:= 0
+	aCols[n,GdFieldPos("Z5_TOTAL")]	:= 0
+	lRet := .F.
+EndIf
+
+Return(lRet)
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ O415DescPer³ Autor ³ Murilo Swistalski   ³ Data ³03/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Calcula o Valor Total pelo Percentual de Desconto		  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function oDescPerc()
+Local lRet		:= .T.
+Local nTotal	:= 0
+
+//+++ Verificar Difenca entre M->Z5_DESCPER e aCols[n,GdFieldPos("Z5_DESCPER")]
+
+If Positivo( M->Z5_DESCPER )
+	aCols[n,GdFieldPos("Z5_DESCVAL")] := 0
+	
+	nVlrTotA := Round(aCols[n,GdFieldPos("Z5_QUANT")] * aCols[n,GdFieldPos("Z5_PRECO")] * aCols[n,GdFieldPos("Z5_NUMDIAS")],2)
+	
+	If M->Z5_DescPer >= 100
+		MsgStop("Percentual de Desconto Incorreto")
+		M->Z5_DESCPER := 0
+//		aCols[n,GdFieldPos("Z5_TOTAL")]	:= 0
+		Return(.F.)
+	EndIf
+	
+	If M->Z5_DescPer == 0
+		nVlrTotB := nVlrTotA
+	Else
+		nVlrTotB := Round(nVlrTotA - ( nVlrTotA / ( 100 / M->Z5_DESCPER ) ),2)
+	EndIf	
+		
+	If aCols[n,GdFieldPos("Z5_BV")] > 0
+		aCols[n,GdFieldPos("Z5_TOTAL")] := Round(nVlrTotB / ( ( 100 - ( aCols[n,GdFieldPos("Z5_BV")] + GetNewPar("MV_WDBVIMP",3) ) ) / 100 ),2)
+	Else
+		aCols[n,GdFieldPos("Z5_TOTAL")] := nVlrTotB
+	EndIf
+
+Else
+	MsgStop("Percentual de Desconto Incorreto")
+//	M->Z5_TOTAL	:= 0
+	M->Z5_DESCPER := 0
+	aCols[n,GdFieldPos("Z5_TOTAL")]	:= 0
+	lRet := .F.
+EndIf
+
+Return(lRet)
+
+/*ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ O415DescVal³ Autor ³ Murilo Swistalski   ³ Data ³03/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Calcula o Valor Total pelo Valor de Desconto				  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB									      ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function oDescVal()
+Local lRet		:= .T.
+Local nVlrTotA	:= 0
+Local nVlrTotB	:= 0
+Local nTotal	:= 0
+
+//+++ Verificar Difenca entre M->Z5_DESCVAL e aCols[n,GdFieldPos("Z5_DESCVAL")]
+
+If Positivo( M->Z5_DESCVAL )
+
+	nVlrTotA := Round(aCols[n,GdFieldPos("Z5_QUANT")] * aCols[n,GdFieldPos("Z5_PRECO")] * aCols[n,GdFieldPos("Z5_NUMDIAS")],2)
+
+	If !(M->Z5_DESCVAL > aCols[n,GdFieldPos("Z5_TOTAL")])
+	
+		aCols[n,GdFieldPos("Z5_DESCPER")] := 0
+		
+		nVlrTotB := Round(nVlrTotA - M->Z5_DESCVAL ,2)
+		aCols[n,GdFieldPos("Z5_TOTAL")] := Round(nVlrTotB / ( ( 100 - ( aCols[n,GdFieldPos("Z5_BV")] + GetNewPar("MV_WDBVIMP",3) ) ) / 100 ),2)
+	Else
+//		nVlrTotB := nVlrTotA
+//		If aCols[n,GdFieldPos("Z5_BV")] > 0
+//			aCols[n,GdFieldPos("Z5_TOTAL")] := Round(nVlrTotB + ( nVlrTotB / ( 100 / aCols[n,GdFieldPos("Z5_BV")] ) ),2)
+//		Else
+//			aCols[n,GdFieldPos("Z5_TOTAL")] := nVlrTotB
+//		EndIf
+		
+		MsgAlert(OemToAnsi("O Valor do Desconto não pode ser maior do que o valor total"))
+		M->Z5_DESCVAL := 0
+		aCols[n,GdFieldPos("Z5_DESCVAL")] := 0
+    EndIf
+Else
+	MsgStop("Desconto Incorreto")
+//	M->Z5_TOTAL	:= 0
+	M->Z5_DESCVAL := 0
+	aCols[n,GdFieldPos("Z5_TOTAL")]	:= 0
+	lRet := .F.
+EndIf
+
+Return(lRet)
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ GravaOrc  ³ Autor ³ Murilo Swistalski       ³ Data ³04/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Gravacao do Orcamento Individual								³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function GravaOrc(nOpc)
+Local aArea		 := GetArea()
+Local nCont		 := 0
+Local nContaItem := 0
+Local cUltNum	 := 0
+Local cNum		 := 0
+Local lRetSC5, lRetSCJ, lRetSZ4 := .F.
+
+If ( nOpc == 3 .Or. nOpc == 4 )
+    
+    BEGIN TRANSACTION
+    
+	//<ITEM 6 e 7> - Se tiver Pedido de Venda Gerado, sera excluido
+	lRetSC5 := ExcluiSC5(M->Z4_CODJOB)
+		
+	//<ITEM 8> - Se tiver Orcamento Gerado, sera cancelado
+	lRetSCJ := CancelSCJ(M->Z4_CODJOB)
+
+	//<ITEM 9> - Se tiver Orcamento de Controle Agrupado, sera cancelado
+	lRetSZ4 := CancGrpSZ4(M->Z4_CODJOB)
+	
+	//Se tiver Agenda gerada, sera cancelada
+	lRetSZ2 := CancelSZ2(M->Z4_CODJOB)
+	
+	//<ITEM 15 e 17> - Avisar Area Tecnica e Faturamento sobre a EXCLUSAO
+	If lRetSC5
+		Avisar("Pedido Relacionado ao JOB " + M->Z4_CODJOB + " foi Excluído", .T., .T., .F., .F.)
+	EndIf
+	If lRetSCJ
+		Avisar("Orçamento Relacionado ao JOB " + M->Z4_CODJOB + " foi Cancelado", .T., .T., .F., .F.)
+	EndIf
+	If lRetSZ4
+		Avisar("Orçamento Agrupado Relacionado ao JOB " + M->Z4_CODJOB + " foi Cancelado", .T., .T., .F., .F.)
+	EndIf
+	If lRetSZ2
+		Avisar("Agenda Relacionada ao JOB " + M->Z4_CODJOB + " foi Cancelada", .T., .T., .F., .F.)
+	EndIf
+	
+	//Se tiver Agenda gerada, cancelar
+	lRetSZ2 := CancelSZ2(M->Z4_CODJOB)
+	    
+    //<ITEM 10> - Nova versao de Orcamento Individual
+    //			  Incluir (SZ5) - Itens do Orcamento Individual dos produtos selecionados no Grid
+    //			  Inativar (campo ATIVO = .F.) todas as versoes anteriores de orcamento selecionada
+    cUltNum := UltZ4Num()
+
+	cNum := StrZero(Val(cUltNum)+1,6)
+	For i:=1 to Len(aCols)
+		If !aCols[i,15] //13
+			RecLock( "SZ5", .T. )
+				nContaItem++
+				SZ5->Z5_FILIAL	:= xFilial("SZ5")
+				SZ5->Z5_ITEM	:= StrZero(nContaItem,2)
+				SZ5->Z5_NUMZ4	:= cNum
+				SZ5->Z5_PRODUTO	:= aCols[i,GdFieldPos("Z5_PRODUTO")]
+				SZ5->Z5_DESCR	:= aCols[i,GdFieldPos("Z5_DESCR")]
+				SZ5->Z5_AREA	:= aCols[i,GdFieldPos("Z5_AREA")]
+				SZ5->Z5_UM		:= aCols[i,GdFieldPos("Z5_UM")]
+				SZ5->Z5_QUANT	:= aCols[i,GdFieldPos("Z5_QUANT")]
+				SZ5->Z5_PRECO	:= aCols[i,GdFieldPos("Z5_PRECO")]
+				SZ5->Z5_TOTAL	:= aCols[i,GdFieldPos("Z5_TOTAL")]
+				SZ5->Z5_TES		:= aCols[i,GdFieldPos("Z5_TES")]
+				SZ5->Z5_DESCPER	:= aCols[i,GdFieldPos("Z5_DESCPER")]
+				SZ5->Z5_DESCVAL	:= aCols[i,GdFieldPos("Z5_DESCVAL")]
+				SZ5->Z5_OBS		:= aCols[i,GdFieldPos("Z5_OBS")]
+				SZ5->Z5_NUMDIAS	:= aCols[i,GdFieldPos("Z5_NUMDIAS")]
+				SZ5->Z5_BV		:= aCols[i,GdFieldPos("Z5_BV")]
+			SZ5->(MsUnLock())
+		EndIf
+	Next
+    
+	//<ITEM 11> - Cancelar Orcamentos individuais do mesmo GRUPO para o JOB
+    cChave := M->Z4_CODJOB + M->Z4_GRUPO
+	If SZ4->(dbSeek(xFilial("SZ4") + cChave))
+		While !EOF() .AND. cChave == SZ4->Z4_CODJOB + SZ4->Z4_GRUPO
+		    Reclock("SZ4",.F.)
+		    SZ4->Z4_STATUS := "0"
+	    	SZ4->(MsUnlock())
+			dbSkip()
+		End
+	EndIf
+	
+	//<ITEM 12> - (SZ4) - Incluir Orcamento Individual
+	Reclock("SZ4",.T.)
+	SZ4->Z4_FILIAL	:= xFilial("SZ4")
+	SZ4->Z4_CODJOB	:= M->Z4_CODJOB
+	SZ4->Z4_VERSAO	:= M->Z4_VERSAO
+	SZ4->Z4_GRUPO	:= M->Z4_GRUPO
+	SZ4->Z4_EMISSAO	:= M->Z4_EMISSAO
+	SZ4->Z4_CLIENTE	:= M->Z4_CLIENTE
+	SZ4->Z4_LOJA	:= M->Z4_LOJA
+	SZ4->Z4_STATUS	:= "1"
+	SZ4->Z4_PAI	   	:= "0"
+	SZ4->Z4_NUMPAI	:= "0"
+	SZ4->Z4_BV		:= M->Z4_BV
+	SZ4->Z4_NUM		:= cNum
+	SZ4->Z4_USER	:= cUsername
+	SZ4->(MsUnlock())
+	
+	END TRANSACTION
+	
+	MsgInfo(OemToAnsi("Orcamento Individual foi incluído com Sucesso!"))
+		
+EndIf
+
+RestArea(aArea)
+Return
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ Mostra    ³ Autor ³ Murilo Swistalski       ³ Data ³04/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Rotina para atualizar a variável com o cliente e o Sub-Total	³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function Mostra()
+
+cCliente := Posicione( "SA1", 1, xFilial("SA1") + M->Z4_CLIENTE + M->Z4_LOJA,"A1_NOME" ) //"A1_NREDUZ" )
+oCliente:Refresh()
+
+nTotal := 0
+For i:=1 to Len(aCols)
+    If aCOLS[i,15] //13
+		Loop
+	EndIf
+	aCols[i,GdFieldPos("Z5_UM")] := Posicione( "SB1", 1, xFilial("SB1") + aCols[i,2] ,"B1_UM" )
+	nTotal += aCols[i,GdFieldPos("Z5_TOTAL")]
+Next
+oTotal:Refresh()
+
+Return(.T.)
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ ORCConsol ³ Autor ³ Murilo Swistalski       ³ Data ³04/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Consolidar Orcamentos Indivuais Ja Gravados					³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+User Function ORCConsol( cAlias, nReg, nOpc )
+Local cCodJOB	 := (cAlias)->Z4_CODJOB
+Local cVersao	 := Versao(cCodJob,"0")
+Local cCliente	 := (cAlias)->Z4_CLIENTE
+Local cLoja		 := (cAlias)->Z4_LOJA
+Local cCondPag	 := ""
+Local cNumFilhos := ""
+Local nCont		 := 0
+Local nItem		 := 0
+local lAchou	 := .F. //Se encontrou Orcamento consolidado ainda Valido
+Local lRetSC5, lRetSCJ, lRetSZ4 := .F.
+
+clQry := "SELECT R_E_C_N_O_ "
+clQry += "FROM "+RetSqlName("SZ4")+" SZ4 "
+clQry += "WHERE Z4_CODJOB	= '" + Alltrim(cCodJOB) + "' AND"
+clQry += "      Z4_PAI		= '1' AND"
+clQry += "	    Z4_STATUS	= '1' AND"
+clQry += "    D_E_L_E_T_	= ' '"
+clQry := ChangeQuery( clQry )
+dbUseArea( .T., "TopConn", TCGenQry(,,clQry), "QRY", .F., .F. )
+                  
+QRY->( dbEval( {|| nCont++ } ) )
+QRY->( dbGoTop() )
+
+If QRY->( !Eof() )
+	lAchou := .T.
+EndIf
+    
+DbSelectArea("QRY")
+QRY->(DbCloseArea())
+
+If lAchou
+	MsgStop(OemToAnsi("Este Orçamento já foi Consolidado!"),"Negado")
+EndIf
+
+If !lAchou .And. APMsgYesNo(OemToAnsi("Apenas as últimas versões de cada grupo serão consideradas.") + chr(13) +;
+						     OemToAnsi("Deseja consolidar orçamentos individuais do JOB n.") + cCodJOB + "?",;
+						     OemToAnsi("Atenção"))
+
+	BEGIN TRANSACTION
+
+	//<ITEM 6 e 7> - Se tiver Pedido de Venda Gerado, sera excluido
+	lRetSC5 := ExcluiSC5(cCodJOB)
+		
+	//<ITEM 8> - Se tiver Orcamento Gerado, sera Excluido
+	lRetSCJ := ExcluiSCJ(cCodJOB)
+
+	//<ITEM 9> - Se tiver Orcamento de Controle Agrupado, sera cancelado
+	lRetSZ4 := CancGrpSZ4(cCodJOB)
+	
+	//Se tiver Agenda gerada, sera cancelada
+	lRetSZ2 := CancelSZ2(cCodJOB)
+	
+	//<ITEM 15 e 17> - Avisar Area Tecnica e Faturamento sobre a EXCLUSAO
+	If lRetSC5
+		Avisar("Pedido Relacionado ao JOB " + cCodJOB + " foi Excluído", .T., .T., .F., .F.)
+	EndIf
+	If lRetSCJ
+		Avisar("Orçamento Relacionado ao JOB " + cCodJOB + " foi Excluido", .T., .T., .F., .F.)
+	EndIf
+	If lRetSZ4
+		Avisar("Orçamento Agrupado Relacionado ao JOB " + cCodJOB + " foi Cancelado", .T., .T., .F., .F.)
+	EndIf
+	If lRetSZ2
+		Avisar("Agenda Relacionada ao JOB " + cCodJOB + " foi Cancelada", .T., .T., .F., .F.)
+	EndIf
+	
+	//Gerar (SZ4) - NOVO Orcamento Agrupado
+	cUltNum := UltZ4Num()
+    cNum := StrZero(Val(cUltNum)+1,6)	
+
+	Reclock("SZ4",.T.)
+	SZ4->Z4_FILIAL	:= xFilial("SZ4")
+	SZ4->Z4_CODJOB	:= cCodJOB
+	SZ4->Z4_VERSAO	:= cVersao
+	SZ4->Z4_GRUPO	:= "0" //Zero para Orcamento Agrupador
+	SZ4->Z4_EMISSAO	:= Date()
+	SZ4->Z4_CLIENTE	:= cCliente
+	SZ4->Z4_LOJA	:= cLoja
+	SZ4->Z4_STATUS	:= "1"
+	SZ4->Z4_PAI		:= "1"
+	SZ4->Z4_NUMPAI	:= "0"
+	SZ4->Z4_NUM		:= cNum
+	SZ4->Z4_USER	:= cUsername
+	SZ4->(MsUnlock())
+	
+	aArea := GetArea()
+	
+		//Alterar Z4_NUMPAI dos Orcamentos Individuais
+		SZ4->( dbSeek( xFilial("SZ4") + cCodJOB ) ) 
+		While !SZ4->(EOF()) .And. cCodJOB == SZ4->Z4_CODJOB
+			//Verifica se e' filho, guarda numero do filho se for valido	       		
+			If SZ4->Z4_PAI == "0"//Verifica se e' filho, se for, coloca o numero do pai
+				Reclock("SZ4",.F.)
+				SZ4->Z4_NUMPAI := cNum
+				SZ4->(MsUnlock())
+			
+				If SZ4->Z4_STATUS == "1"
+					cNumFilhos += ",'" + SZ4->Z4_NUM + "'"
+				EndIf
+	        EndIf
+	        SZ4->( dbSkip() )
+		End
+		//Retira primeira virgula, se houver
+		If Len(cNumFilhos) > 1
+			cNumFilhos := Substr(cNumFilhos,2,Len(cNumFilhos)-1)
+		Else
+			RestArea(aArea)
+			MsgStop(OemToAnsi("Não encontrado nenhum Orçamento Individual Ativo para o JOB n.") + cCodJOB)
+			DISARMTRANSACTION()
+			Return
+		EndIf
+		
+	RestArea(aArea)
+	
+	//Gerar (SZ5) - Apenas para os ultimos ORCAMENTOS INDIVIDUAIS com Z4_STATUS = 1
+	clQry := "SELECT * " 
+	clQry += "FROM "+RetSqlName("SZ5")+" SZ5 "
+	clQry += "WHERE Z5_NUMZ4 IN (" + cNumFilhos + ") "
+	clQry += "ORDER BY Z5_NUMZ4"
+	clQry := ChangeQuery( clQry )
+	dbUseArea( .T., "TopConn", TCGenQry(,,clQry), "QZ5", .F., .F. )
+	                  
+	QZ5->( dbEval( {|| nCont++ } ) )
+	QZ5->( dbGoTop() )
+	nItem := 0
+	While QZ5->( !Eof() )
+		nItem += 1
+		cItem := StrZero(nItem,2)
+		Reclock("SZ5",.T.)
+		SZ5->Z5_FILIAL	:= QZ5->Z5_FILIAL
+		SZ5->Z5_ITEM	:= cItem
+		SZ5->Z5_PRODUTO	:= QZ5->Z5_PRODUTO
+		SZ5->Z5_DESCR	:= QZ5->Z5_DESCR
+		SZ5->Z5_UM		:= QZ5->Z5_UM
+		SZ5->Z5_QUANT	:= QZ5->Z5_QUANT
+		SZ5->Z5_PRECO	:= QZ5->Z5_PRECO
+		SZ5->Z5_TOTAL	:= QZ5->Z5_TOTAL
+		SZ5->Z5_TES		:= QZ5->Z5_TES
+		SZ5->Z5_DESCPER	:= QZ5->Z5_DESCPER
+		SZ5->Z5_DESCVAL	:= QZ5->Z5_DESCVAL
+		SZ5->Z5_NUMZ4	:= cNum
+		SZ5->Z5_OBS		:= QZ5->Z5_OBS
+		SZ5->(MsUnlock())
+		QZ5->(dbSkip())
+	End
+    
+	DbSelectArea("QZ5")
+	QZ5->(DbCloseArea())    
+
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Incluir Pedido - Padrao (SC5)	³
+	//³   utilizando informacoes do SZ4 ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+	cCondPag := Retorna( "SA1", 1, xFilial("SA1") + SZ4->Z4_CLIENTE + SZ4->Z4_LOJA, "A1_COND" )
+	Reclock("SC5",.T.)
+	SC5->C5_FILIAL	:= xFilial("SZ4")
+	SC5->C5_CODJOB	:= SZ4->Z4_CODJOB
+	SC5->C5_NUM		:= StrZero(Val(UltC5Num())+1,6)
+	SC5->C5_EMISSAO	:= Date()
+	SC5->C5_CLIENTE	:= SZ4->Z4_CLIENTE
+	SC5->C5_LOJACLI	:= SZ4->Z4_LOJA
+	SC5->C5_CLIENT	:= SZ4->Z4_CLIENTE
+	SC5->C5_LOJAENT	:= SZ4->Z4_LOJA
+	SC5->C5_TIPOCLI	:= Retorna( "SA1", 1, xFilial("SA1") + SZ4->Z4_CLIENTE + SZ4->Z4_LOJA, "A1_TIPO" )
+	SC5->C5_CONDPAG	:= IIF(cCondPag=="   ","001",cCondPag)
+	SC5->C5_TIPO	:= "N" //Normal
+	SC5->C5_MOEDA	:= 1
+	SC5->C5_TIPLIB	:= "1"
+	SC5->C5_TPCARGA	:= "2"
+	SC5->C5_TXMOEDA	:= 1
+	SC5->C5_GERAWMS	:= "1"
+	SC5->(MsUnlock())
+	
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Incluir Orcamento Padrao (SCJ)	³
+	//³   utilizando informacoes do SZ4	³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+	Reclock("SCJ",.T.)
+	SCJ->CJ_FILIAL	:= xFilial("SZ4")
+	SCJ->CJ_CODJOB	:= SZ4->Z4_CODJOB
+	SCJ->CJ_NUM		:= StrZero(Val(UltCJNum())+1,6)
+	SCJ->CJ_EMISSAO	:= Date()
+	SCJ->CJ_CLIENTE	:= SZ4->Z4_CLIENTE //Posicione( "SZ4", 2, xFilial("SZ4") + Num, "Z4_CLIENTE" )
+	SCJ->CJ_LOJA	:= SZ4->Z4_LOJA //Posicione( "SZ4", 2, xFilial("SZ4") + Num, "Z4_LOJA" )
+	SCJ->CJ_CLIENT	:= SZ4->Z4_CLIENTE //Posicione( "SZ4", 2, xFilial("SZ4") + Num, "Z4_CLIENTE" )
+	SCJ->CJ_LOJAENT	:= SZ4->Z4_LOJA //Posicione( "SZ4", 2, xFilial("SZ4") + Num, "Z4_LOJA" )
+	SCJ->CJ_CONDPAG	:= IIF(cCondPag=="   ","001",cCondPag)
+	SCJ->CJ_STATUS	:= "A"
+	SCJ->CJ_VALIDA	:= Retorna( "SZ1", 1, cCodJOB, "Z1_DTEVINI" )
+	SCJ->CJ_MOEDA	:= 1
+	SCJ->CJ_TIPLIB	:= "1"
+	SCJ->CJ_TPCARGA	:= "2"
+	SCJ->CJ_TXMOEDA	:= 1
+	SCJ->(MsUnlock())
+	
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ INCLUIR ITENS DE:				  ³
+	//³     - Orcamentos Padrao (SCK)     ³
+	//³     - Pedidos           (SC6)	  ³
+	//³									  ³
+	//³ ( utilizando informacoes do SZ5	) ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+	SZ5->( dbSetOrder(1) )
+	SZ5->( dbSeek( xFilial("SZ5") + cNum ) )
+	nItem := 0		
+	While !SZ5->(EOF()) .And. xFilial("SZ4") + cNum == SZ5->Z5_FILIAL + SZ5->Z5_NUMZ4
+		nItem := nItem + 1
+		cItem := StrZero(nItem,2)
+		cEntrega := Retorna( "SZ1", 1, SZ4->Z4_CODJOB, "Z1_DTMONT1" )
+		cEntrega := IIf(Empty(cEntrega),Retorna( "SZ1", 1, SZ4->Z4_CODJOB, "Z1_DTEVINI" ) ,cEntrega)
+		Reclock("SCK",.T.)
+		SCK->CK_FILIAL	:= SZ5->Z5_FILIAL
+		SCK->CK_NUM		:= UltCJNum()
+		SCK->CK_ITEM	:= cItem
+		SCK->CK_PRODUTO	:= SZ5->Z5_PRODUTO
+		SCK->CK_UM		:= SZ5->Z5_UM
+		SCK->CK_QTDVEN	:= SZ5->Z5_QUANT
+		SCK->CK_PRCVEN	:= SZ5->Z5_PRECO
+		SCK->CK_VALOR	:= SZ5->Z5_TOTAL
+		SCK->CK_TES		:= SZ5->Z5_TES
+		SCK->CK_LOCAL	:= "01"
+		SCK->CK_CLIENTE	:= SZ4->Z4_CLIENTE
+		SCK->CK_LOJA	:= SZ4->Z4_LOJA
+		SCK->CK_DESCRI	:= SZ5->Z5_DESCR
+		SCK->CK_ENTREG	:= cEntrega
+		SCK->CK_FILVEN	:= SZ5->Z5_FILIAL
+		SCK->CK_FILENT	:= SZ5->Z5_FILIAL
+		SCK->CK_DT1VEN	:= SZ4->Z4_EMISSAO
+		SCK->CK_NUMPV	:= SC5->C5_NUM
+		SCK->(MsUnlock())
+		
+		Reclock("SC6",.T.)
+		SC6->C6_FILIAL	:= SZ5->Z5_FILIAL
+		SC6->C6_NUM		:= UltC5Num()
+		SC6->C6_ITEM	:= cItem
+		SC6->C6_UM		:= SZ5->Z5_UM
+		SC6->C6_PRODUTO	:= SZ5->Z5_PRODUTO
+ 		SC6->C6_QTDVEN	:= SZ5->Z5_QUANT
+		SC6->C6_PRCVEN	:= SZ5->Z5_PRECO
+		SC6->C6_VALOR	:= SZ5->Z5_TOTAL
+		SC6->C6_TES		:= SZ5->Z5_TES
+		SC6->C6_LOCAL	:= "01"
+		SC6->C6_CLI		:= SZ4->Z4_CLIENTE
+		SC6->C6_LOJA	:= SZ4->Z4_LOJA
+		SC6->C6_DESCRI	:= SZ5->Z5_DESCR
+		SC6->C6_ENTREG	:= cEntrega
+		SC6->C6_SUGENTR	:= cEntrega
+		SC6->C6_CF 		:= Retorna( "SF4", 1, xFilial("SF4") + SZ5->Z5_TES, "F4_CF" )
+		SC6->C6_TPOP	:= "F" //F=Firme - P=Prevista
+		SC6->(MsUnlock())
+		
+		SZ5->(dbSkip())
+	End
+
+	dbSelectArea("SZ1")
+	If SZ1->( dbSeek( xFilial("SZ1") + cCodJob ) )
+		Reclock("SZ1",.F.)
+		SZ1->Z1_NUMCJ	:= SCJ->CJ_NUM
+		SZ1->Z1_NUMC5	:= SC5->C5_NUM
+		SZ1->(MsUnlock())
+	EndIf
+	
+    //ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³  Incluir Pedido para Nota de Servico (esta nota sera a nota de cobranca)  ³
+	//³ com apenas um item, usando a TES de MV_WDBVEND e Produto de MV_WDBSERV	  ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+	aArea := GetArea()
+	//Obtem o Valor Total da Nota de Servico
+	SZ5->( dbSetOrder(1) )
+	SZ5->( dbSeek( xFilial("SZ5") + cNum ) )
+	nTotal := 0
+	While !SZ5->(EOF()) .And. xFilial("SZ4") + cNum == SZ5->Z5_FILIAL + SZ5->Z5_NUMZ4
+		nTotal += SZ5->Z5_TOTAL
+		SZ5->(dbSkip())
+	End
+	RestArea(aArea)
+	
+    //Retorna o Produto informado no parametro se o mesmo existir no SB1
+	cB1Cod := ""
+	cB1Cod := Retorna("SB1", 1, xFilial("SB1") + GetNewPar("MV_WDBSERV","SERVICO"), "B1_COD" ) //B1_FILIAL+B1_COD
+
+	If nTotal > 0 .And. AllTrim(cB1Cod) <> ""
+		cCondPag := Retorna( "SA1", 1, xFilial("SA1") + SZ4->Z4_CLIENTE + SZ4->Z4_LOJA, "A1_COND" )
+		Reclock("SC5",.T.)
+		SC5->C5_FILIAL	:= xFilial("SZ4")
+		SC5->C5_CODJOB	:= SZ4->Z4_CODJOB
+		SC5->C5_NUM		:= StrZero(Val(UltC5Num())+1,6)
+		SC5->C5_EMISSAO	:= Date()
+		SC5->C5_CLIENTE	:= SZ4->Z4_CLIENTE
+		SC5->C5_LOJACLI	:= SZ4->Z4_LOJA
+		SC5->C5_CLIENT	:= SZ4->Z4_CLIENTE
+		SC5->C5_LOJAENT	:= SZ4->Z4_LOJA
+		SC5->C5_TIPOCLI	:= Retorna( "SA1", 1, xFilial("SA1") + SZ4->Z4_CLIENTE + SZ4->Z4_LOJA, "A1_TIPO" )
+		SC5->C5_CONDPAG	:= IIF(cCondPag=="   ","001",cCondPag)
+		SC5->C5_TIPO	:= "N" //Normal
+		SC5->C5_MOEDA	:= 1
+		SC5->C5_TIPLIB	:= "1"
+		SC5->C5_TPCARGA	:= "2"
+		SC5->C5_TXMOEDA	:= 1
+		SC5->C5_GERAWMS	:= "1"
+		SC5->(MsUnlock())
+		
+		Reclock("SC6",.T.)
+		SC6->C6_FILIAL	:= SZ5->Z5_FILIAL
+		SC6->C6_NUM		:= UltC5Num()
+		SC6->C6_ITEM	:= "01" //cItem
+		SC6->C6_UM		:= "UN" //SZ5->Z5_UM
+		SC6->C6_PRODUTO	:= GetNewPar("MV_WDBSERV","SERVICO") //SZ5->Z5_PRODUTO
+		SC6->C6_QTDVEN	:= 1 //SZ5->Z5_QUANT
+		SC6->C6_PRCVEN	:= nTotal //SZ5->Z5_PRECO
+		SC6->C6_VALOR	:= nTotal //SZ5->Z5_TOTAL
+		SC6->C6_TES		:= GetNewPar("MV_WDBVEND","510") //TES de Servico
+		SC6->C6_LOCAL	:= "01"
+		SC6->C6_CLI		:= SZ4->Z4_CLIENTE
+		SC6->C6_LOJA	:= SZ4->Z4_LOJA
+		SC6->C6_DESCRI	:= SZ5->Z5_DESCR
+		SC6->C6_ENTREG	:= cEntrega
+		SC6->C6_SUGENTR	:= cEntrega
+		SC6->C6_CF 		:= Retorna( "SF4", 1, xFilial("SF4") + SZ5->Z5_TES, "F4_CF" )
+		SC6->C6_TPOP	:= "F" //F=Firme - P=Prevista
+		SC6->(MsUnlock())
+		
+		dbSelectArea("SZ1")
+		If SZ1->( dbSeek( xFilial("SZ1") + cCodJob ) )
+			Reclock("SZ1",.F.)
+			SZ1->Z1_NUMSERV	:= SC5->C5_NUM
+			SZ1->(MsUnlock())
+		EndIf
+		
+		lServ := .T.
+	Else
+		MsgStop(OemToAnsi("Para gerar Pedido de Serviço,")+chr(13)+;
+				OemToAnsi("o Parâmetro MV_WDBSERV deve ser preenchido corretamente"),;
+				OemToAnsi("Serviço não foi Gerado!"))
+		lServ := .F.
+	EndIf
+
+	//Incluir AGENDA 
+	cStatus := "0"
+	Do Case
+	   Case SZ1->Z1_STATUS == ""
+	   		cStatus := "0"
+	   Case SZ1->Z1_STATUS == "A"
+	   		cStatus := "0"
+	   Case SZ1->Z1_STATUS == "B"
+	   		cStatus := "25"
+	   Case SZ1->Z1_STATUS == "C"
+	   		cStatus := "50"
+	   Case SZ1->Z1_STATUS == "D"
+	   		cStatus := "75"
+	   Case SZ1->Z1_STATUS == "E"
+	   		cStatus := "90"
+	   Case SZ1->Z1_STATUS == "F"
+	   		cStatus := "100"
+	   Case SZ1->Z1_STATUS == "G"
+	   		cStatus := "OK"
+	   Case SZ1->Z1_STATUS == "H"
+	   		cStatus := "CAIU"
+	EndCase
+
+	Reclock("SZ2",.T.)
+	SZ2->Z2_FILIAL	:=	xFilial("SZ2")
+	SZ2->Z2_CODJOB	:= SZ4->Z4_CODJOB
+	SZ2->Z2_VERSAO	:= SZ4->Z4_VERSAO
+	SZ2->Z2_NUMZ4	:= SZ4->Z4_NUM
+	SZ2->Z2_PAI		:= "1"
+	SZ2->Z2_ATIVO	:= "1"
+	SZ2->Z2_STATUS	:= cStatus
+	SZ2->Z2_RESERVA	:= Right(SZ4->Z4_NUM,3)
+	SZ2->(MsUnlock())
+	
+	//Incluir Reservas de Agenda
+	SZ5->( dbSetOrder(1) )
+	If SZ5->( dbSeek(xFilial("SZ5") + SZ4->Z4_NUM ))
+		While !SZ5->(EOF()) .And. SZ5->Z5_NUMZ4 == SZ4->Z4_NUM
+			Reclock("SZ3",.T.)
+			SZ3->Z3_FILIAL	:=	xFilial("SZ3")
+			SZ3->Z3_CODJOB	 := SZ4->Z4_CODJOB
+			SZ3->Z3_RESERVA	 := SZ2->Z2_RESERVA
+			SZ3->Z3_ORCADO	 := "1"
+			SZ3->Z3_ORCALT	 := "0"
+	  		SZ3->Z3_ORCOBS	 := ""
+			SZ3->Z3_ITEM	 := SZ5->Z5_ITEM
+			SZ3->Z3_ORCPROD	 := SZ5->Z5_PRODUTO
+			SZ3->Z3_ORCQT	 := SZ5->Z5_QUANT
+			SZ3->Z3_TECPROD	 := SZ5->Z5_PRODUTO
+			SZ3->Z3_TECQT	 := SZ5->Z5_QUANT
+			SZ3->Z3_TECOBS	 := ""
+			
+			SZ3->(MsUnlock())
+			SZ5->(dbSkip())
+		End
+    EndIf
+	
+	END TRANSACTION
+	
+	//Informar numeracoes geradas de Orcamento e Pedido
+	MsgInfo(OemToAnsi("Gerado Orçamento Padrao n.") + SZ1->Z1_NUMCJ + chr(13) +; //SCJ->CJ_NUM + chr(13) +;
+			OemToAnsi("Gerado Pedido n.") + SZ1->Z1_NUMC5 + chr(13) +; //SC5->C5_NUM,;
+			IIF(lServ,OemToAnsi("Gerado Serviço n.") + SZ1->Z1_NUMSERV,""),;
+			OemToAnsi("Orçamento Consolidado com Sucesso!"))
+	
+	//<ITEM 15 e 17> - Avisar Area Tecnica e Faturamento sobre a INCLUSAO
+	Avisar("Pedido Relacionado ao JOB " + cCodJOB + " foi Criado!", .T., .T., .F., .F.)
+	If lServ
+		Avisar(OemToAnsi("Serviço Relacionado ao JOB ") + cCodJOB + " foi Criado!", .T., .T., .F., .F.)
+	EndIf
+	Avisar("Orçamento Relacionado ao JOB " + cCodJOB + " foi Criado", .T., .T., .F., .F.)
+	
+EndIf
+
+Return
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ UltZ4Num  ³ Autor ³ Murilo Swistalski       ³ Data ³05/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Retorna ultimo numero de orcamento controlado					³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function UltZ4Num()
+Local cUltNum := ""
+Local nCont := 0
+
+clQry := "SELECT Z4_NUM "
+clQry += "FROM "+RetSqlName("SZ4")+" SZ4 "
+clQry += "ORDER BY Z4_NUM DESC"
+clQry := ChangeQuery( clQry )
+dbUseArea( .T., "TopConn", TCGenQry(,,clQry), "QZ4", .F., .F. )
+                  
+QZ4->( dbEval( {|| nCont++ } ) )
+QZ4->( dbGoTop() )
+
+If QZ4->( !Eof() )
+    cUltNum := QZ4->Z4_NUM
+Else
+	cUltNum := Replicate("0",6)
+EndIf
+    
+DbSelectArea("QZ4")
+QZ4->(DbCloseArea())
+
+Return cUltNum
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ UltCJNum  ³ Autor ³ Murilo Swistalski       ³ Data ³05/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Retorna ultimo numero de Orcamento Padrao						³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function UltCJNum()
+Local cUltNum := ""
+Local nCont := 0
+
+clQry := "SELECT CJ_NUM "
+clQry += "FROM "+RetSqlName("SCJ")+" SCJ "
+clQry += "ORDER BY CJ_NUM DESC"
+clQry := ChangeQuery( clQry )
+dbUseArea( .T., "TopConn", TCGenQry(,,clQry), "QCJ", .F., .F. )
+                  
+QCJ->( dbEval( {|| nCont++ } ) )
+QCJ->( dbGoTop() )
+
+If QCJ->( !Eof() )
+    cUltNum := QCJ->CJ_NUM
+Else
+	cUltNum := Replicate("0",6)
+EndIf
+    
+DbSelectArea("QCJ")
+QCJ->(DbCloseArea())
+
+Return cUltNum
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ UltC5Num  ³ Autor ³ Murilo Swistalski       ³ Data ³05/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Retorna ultimo numero de Pedido								³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function UltC5Num()
+Local cUltNum := ""
+Local nCont := 0
+
+clQry := "SELECT C5_NUM "
+clQry += "FROM "+RetSqlName("SC5")+" SC5 "
+//clQry += "WHERE D_E_L_E_T_ = '' "
+clQry += "ORDER BY C5_NUM DESC"
+clQry := ChangeQuery( clQry )
+dbUseArea( .T., "TopConn", TCGenQry(,,clQry), "QC5", .F., .F. )
+                  
+QC5->( dbEval( {|| nCont++ } ) )
+QC5->( dbGoTop() )
+
+If QC5->( !Eof() )
+    cUltNum := QC5->C5_NUM
+Else
+	cUltNum := Replicate("0",6)
+EndIf
+    
+DbSelectArea("QC5")
+QC5->(DbCloseArea())
+
+Return cUltNum
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ ExcluiSC5 ³ Autor ³ Murilo Swistalski       ³ Data ³05/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Exclui pedido de acordo com o JOB informado					³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function ExcluiSC5(cCodJOB)
+Local aArea := GetArea()
+Local lRet := .F.
+
+dbSelectArea("SC5")
+dbSetOrder(5)
+
+If SC5->( dbSeek( xFilial("SZ4") + Alltrim(cCodJOB) ) )
+	//foi gerado pedido de venda, excluir pedido e itens
+	
+	While !SC5->(EOF()) .AND. SC5->C5_CODJOB == Alltrim(cCodJOB)
+	
+		dbSelectArea("SC6")
+		dbSetOrder(1)
+		SC6->(dbSeek(xFilial("SC6")+SC5->C5_NUM))
+		
+		While !SC6->(EOF()) .AND. SC5->C5_NUM == SC6->C6_NUM
+			Reclock("SC6",.F.)
+			SC6->(dbDelete())
+			SC6->(MsUnlock())
+			SC6->(dbSkip())
+		End
+		
+		Reclock("SC5",.F.)
+		SC5->(dbDelete())
+		SC5->(MsUnlock())
+	
+		SC5->(dbSkip())
+	End
+	
+	lRet := .T.
+
+EndIf
+RestArea(aArea)
+Return lRet
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ ExcluiSCJ ³ Autor ³ Murilo Swistalski       ³ Data ³06/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Exclui Orcamento Padrao de acordo com o JOB informado			³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function ExcluiSCJ(cCodJOB)
+Local aArea := GetArea()
+Local lRet := .F.
+
+dbSelectArea("SCJ")
+dbSetOrder(6)
+
+If SCJ->( dbSeek( xFilial("SZ4") + Alltrim(cCodJOB) ) )
+	//foi gerado pedido de venda, excluir pedido e itens
+	dbSelectArea("SCK")
+	dbSetOrder(1)
+	SCK->(dbSeek(xFilial("SCJ")+SCJ->CJ_NUM))
+	
+	While !EOF() .AND. SCJ->CJ_NUM == SCK->CK_NUM
+		Reclock("SCK",.F.)
+		SCK->(dbDelete())
+		SCK->(MsUnlock())
+		SCK->(dbSkip())
+	End
+	
+	Reclock("SCJ",.F.)
+	SCJ->(dbDelete())
+	SCJ->(MsUnlock())
+    
+	lRet := .T.
+EndIf
+RestArea(aArea)
+Return lRet
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ CancelSCJ ³ Autor ³ Murilo Swistalski       ³ Data ³05/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Cancela Orcamento SCJ de acordo com o JOB informado			³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function CancelSCJ(cCodJOB)
+Local aArea := GetArea()
+Local lRet	:= .F.
+
+dbSelectArea("SCJ")
+dbSetOrder(6)
+
+If SCJ->( dbSeek(xFilial("SZ4") + Alltrim(cCodJOB) ) )
+//foi gerado orcamento, cancelar
+	Reclock("SCJ",.F.)
+	SCJ->CJ_STATUS := "C"
+	SCJ->(MsUnlock())
+	lRet := .T.
+EndIf
+
+RestArea(aArea)
+Return lRet
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ CancGrpSZ4³ Autor ³ Murilo Swistalski       ³ Data ³05/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Cancela Orcamento Agrupado SZ4 de acordo com o JOB informado	³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function CancGrpSZ4(cCodJOB)
+Local aArea := GetArea()
+Local lRet	:= .F.
+
+dbSelectArea("SZ4")
+SZ4->( dbSetOrder(1) )
+If SZ4->( dbSeek( xFilial("SZ4") + Alltrim(cCodJOB) ) )
+	While !EOF() .And. SZ4->Z4_CODJOB == Alltrim(cCodJOB)
+   		If SZ4->Z4_PAI == '1' .And. SZ4->Z4_STATUS == "1"
+   			lRet := .T.
+   			
+	   		Reclock("SZ4",.F.)
+			SZ4->Z4_STATUS := "0"
+	    	SZ4->(MsUnlock())
+	    Else
+	    	Reclock("SZ4",.F.)
+			SZ4->Z4_NUMPAI := "0"
+	    	SZ4->(MsUnlock())
+   		EndIf
+   		
+   		SZ4->(dbSkip())
+	End
+EndIf
+
+RestArea(aArea)
+Return lRet
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ CancelSZ2 ³ Autor ³ Murilo Swistalski       ³ Data ³24/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Cancela Agenda gerada de acordo com o JOB informado			³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function CancelSZ2(cCodJOB)
+Local aArea := GetArea()
+Local lRet	:= .F.
+
+dbSelectArea("SZ2")
+SZ2->( dbSetOrder(1) )
+If SZ2->( dbSeek( cCodJOB ) )
+	While !SZ2->(EOF()) .And. SZ2->Z2_CODJOB <> cCodJOB
+		Reclock("SZ2",.F.)
+		SZ2->Z2_ATIVO	:= "0"
+		SZ2->(MsUnlock())
+		
+		SZ2->(dbSkip())
+	End
+EndIf
+
+RestArea(aArea)
+Return lRet
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ Retorna   ³ Autor ³ Murilo Swistalski      ³ Data ³06/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Uso da Funcao Posicione sem perder o ponteiro de Tabela		³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function Retorna(cAlias,nIdx,cChave,cCampo)
+Local aArea := GetArea()
+Local cRet	
+
+cRet := Posicione( cAlias, nIdx, cChave,cCampo )
+             
+RestArea(aArea)
+Return cRet 
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ Avisa     ³ Autor ³ Murilo Swistalski      ³ Data ³06/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Envio de Aviso por Email para as Areas responsaveis			³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Parametros³ cMsg - Texto com a Mensagem a ser enviada					³±±
+±±³          ³ lTecnica   - (.T.) email para area Tecnica					³±±
+±±³          ³ lFinanceiro- (.T.) email para area Financeiro				³±±
+±±³          ³ lComercial - (.T.) email para area Comercial					³±±
+±±³          ³ lFaturista - (.T.) email para o Faturista					³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+Static Function Avisar(cMsg, lTecnica, lFinanceiro, lComercial, lFaturista)
+
+//MsgAlert("Envio de Aviso")
+
+Return
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ ORCCanc   ³ Autor ³ Murilo Swistalski      ³ Data ³10/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Cancela/Desativa orcamento individual NAO AGRUPADO e ATIVO	³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+User Function ORCCanc( cAlias, nReg, nOpc )
+Local aGrupos := {}
+AADD(aGrupos,OemToAnsi("1 - Sonorização"))
+AADD(aGrupos,OemToAnsi("2 - Iluminação"))
+AADD(aGrupos,OemToAnsi("3 - Projeção"))
+AADD(aGrupos,OemToAnsi("4 - Filmes"))
+AADD(aGrupos,OemToAnsi("5 - Cenografia"))
+AADD(aGrupos,OemToAnsi("6 - Logística"))
+
+If (cAlias)->Z4_PAI == "0" .And. (cAlias)->Z4_STATUS == "1"
+	If APMsgYesNo(OemToAnsi("Deseja cancelar/desabilitar Orçamento Individual?") + chr(13) + ;
+							" - JOB n." + (cAlias)->Z4_CODJOB + chr(13) + ;
+							" - Grupo " + aGrupos[Val((cAlias)->Z4_GRUPO)] + chr(13) + ;
+							" - Versão " + (cAlias)->Z4_VERSAO,OemToAnsi("CANCELAR Orçamento Individual"))
+		Reclock("SZ4",.F.)
+		(cAlias)->Z4_STATUS := "0"
+    	(cAlias)->(MsUnlock())
+	EndIf
+Else
+	MsgStop(OemToAnsi("Apenas é possível cancelar Orçamentos Individuais Ativos" ),"Negado!")
+EndIf
+
+Return
+                                                        
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ ORCAtiva  ³ Autor ³ Murilo Swistalski      ³ Data ³10/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Habilita/Ativa orcamento individual NAO AGRUPADO e INATIVO	³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+User Function ORCAtiva( cAlias, nReg, nOpc )
+Local aArea		:= {}
+Local aGrupos	:= {}
+Local cChave	:= ""
+
+AADD(aGrupos,OemToAnsi("1 - Sonorização"))
+AADD(aGrupos,OemToAnsi("2 - Iluminação"))
+AADD(aGrupos,OemToAnsi("3 - Projeção"))
+AADD(aGrupos,OemToAnsi("4 - Filmes"))
+AADD(aGrupos,OemToAnsi("5 - Cenografia"))
+AADD(aGrupos,OemToAnsi("6 - Logística"))
+
+If (cAlias)->Z4_PAI == "0" .And. (cAlias)->Z4_STATUS == "0"
+	If APMsgYesNo(OemToAnsi("Deseja ativar/habilitar Orçamento Individual?") + chr(13) + ;
+							" - JOB n." + (cAlias)->Z4_CODJOB + chr(13) + ;
+							" - Grupo " + aGrupos[Val((cAlias)->Z4_GRUPO)] + chr(13) + ;
+							" - Versão " + (cAlias)->Z4_VERSAO,OemToAnsi("ATIVAR Orçamento Individual"))
+		
+		BEGIN TRANSACTION 
+    	
+    	aArea := GetArea()
+    	
+    	cChave := (cAlias)->Z4_CODJOB + (cAlias)->Z4_GRUPO
+		If SZ4->(dbSeek(xFilial("SZ4") + cChave))
+			While !EOF() .AND. cChave == SZ4->Z4_CODJOB + (cAlias)->Z4_GRUPO
+				If SZ4->Z4_PAI == "0"
+				    Reclock("SZ4",.F.)
+			    	SZ4->Z4_STATUS := "0"
+			    	SZ4->(MsUnlock())
+			    EndIf
+				dbSkip()
+			End
+		EndIf
+		
+		RestArea(aArea)
+
+		Reclock("SZ4",.F.)
+		(cAlias)->Z4_STATUS := "1"
+    	(cAlias)->(MsUnlock())    	
+    	
+    	END TRANSACTION
+    	
+	EndIf
+Else
+	MsgStop(OemToAnsi("Apenas é possível ativar Orçamentos Individuais Inativos" ),"Negado!")
+EndIf
+
+Return
+
+/*±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o   ³ ORCCopiar ³ Autor ³ Murilo Swistalski       ³ Data ³10/05/2010³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o³ Copia Orcamento Indivual Ja Gravado							³±±
+±±ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso     ³ Especifico para WDB											³±±
+±±ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±*/
+
+User Function ORCCopiar( cAlias, nReg, nOpc )
+//nao permitir copia de Orcamentos Consolidador
+// se for copiar orcamento individual que ja' foi agrupado, informar
+If (cAlias)->Z4_PAI == "1"
+	MsgStop(OemToAnsi("Não é permitido copiar Orçamento Consolidado"),OemToAnsi("Cópia Negada"))
+Else
+	U_ORCAMENTO( cAlias, nReg, nOpc )
+EndIf
+
+Return

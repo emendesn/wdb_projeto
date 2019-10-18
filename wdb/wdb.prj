@@ -1,0 +1,64 @@
+Group WDB
+   Version=7.0
+   VSSDB=
+   HasProperties=1
+   Properties
+      BeforeApply=
+      AfterApply=
+      Icon=
+      ID=
+      Version=
+      PalmName=
+      OutPut=
+   End
+   ProjectsCount=1
+   Project Novo Projeto
+      FoldersCount=1
+      Folder Fontes
+         VSSPath=Fontes
+         FilesCount=14
+         File \WDB\my projects\MTA440AC.prw
+             Type=T
+         End
+         File \WDB\my projects\A410CONS.prw
+             Type=T
+         End
+         File \WDB\my projects\KZ_EmlTc.PRW
+             Type=T
+         End
+         File \WDB\my projects\KZ_FTlPd.prw
+             Type=T
+         End
+         File \WDB\my projects\M410LIOK.prw
+             Type=T
+         End
+         File \WDB\my projects\M440STTS.prw
+             Type=T
+         End
+         File \WDB\my projects\MA440VLD.prw
+             Type=T
+         End
+         File \WDB\my projects\MT410TOK.prw
+             Type=T
+         End
+         File \WDB\my projects\MTA410T.prw
+             Type=T
+         End
+         File \my projects\WD_UPDJOB.PRW
+             Type=T
+         End
+         File \my projects\JOBAGENDA.PRW
+             Type=T
+         End
+         File \my projects\Folha\GPEA260WDB.PRX
+             Type=T
+         End
+         File \my projects\Folha\GPER460WDB.PRX
+             Type=T
+         End
+         File \my projects\Ponto de Entrada\MTDescrNFE.prw
+             Type=T
+         End
+      End
+   End
+End

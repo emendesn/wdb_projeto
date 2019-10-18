@@ -1,0 +1,1647 @@
+<ApMenu>
+	<DocumentProperties>
+		<Module></Module>
+		<Version>10.1</Version>
+	</DocumentProperties>
+	<Menu Status="Enable">
+		<Title lang="pt">&Atualizações</Title>
+		<Title lang="es">&Actualizaciones</Title>
+		<Title lang="en">&Updates</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Calculadora</Title>
+			<Title lang="es">Calculadora</Title>
+			<Title lang="en">Calculadora</Title>
+			<Function>CALC</Function>
+			<Type>03</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">CadAlu</Title>
+			<Title lang="es">CadAlu</Title>
+			<Title lang="en">CadAlu</Title>
+			<Function>CadAlu</Function>
+			<Type>03</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Consultas</Title>
+		<Title lang="es">&Consultas</Title>
+		<Title lang="en">&Searches</Title>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Relatorios</Title>
+		<Title lang="es">&Informes</Title>
+		<Title lang="en">&Reports</Title>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Miscelanea</Title>
+		<Title lang="es">&Miscelanea</Title>
+		<Title lang="en">&Miscellaneous</Title>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Cadastros</Title>
+		<Title lang="es">Archivos</Title>
+		<Title lang="en">Files</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Produtos</Title>
+			<Title lang="es">Productos</Title>
+			<Title lang="en">Products</Title>
+			<Function>MATA010</Function>
+			<Type>01</Type>
+			<Tables>SB2</Tables>
+			<Tables>SB3</Tables>
+			<Tables>SB4</Tables>
+			<Tables>SB5</Tables>
+			<Tables>SB6</Tables>
+			<Tables>SB8</Tables>
+			<Tables>SBJ</Tables>
+			<Tables>SBE</Tables>
+			<Tables>SBF</Tables>
+			<Tables>SDD</Tables>
+			<Tables>SC1</Tables>
+			<Tables>SC2</Tables>
+			<Tables>SC4</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SC7</Tables>
+			<Tables>SD1</Tables>
+			<Tables>SD2</Tables>
+			<Tables>SD3</Tables>
+			<Tables>SD4</Tables>
+			<Tables>SG1</Tables>
+			<Tables>SG2</Tables>
+			<Tables>SED</Tables>
+			<Tables>SI3</Tables>
+			<Tables>SM2</Tables>
+			<Tables>SYD</Tables>
+			<Tables>SI4</Tables>
+			<Tables>SID</Tables>
+			<Tables>SIC</Tables>
+			<Tables>SJ2</Tables>
+			<Tables>SC3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>2</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Grupo de Produtos</Title>
+			<Title lang="es">Grupo de Productos</Title>
+			<Title lang="en">Product Group</Title>
+			<Function>MATA035</Function>
+			<Type>01</Type>
+			<Tables>SBM</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>2</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Unidades Medida</Title>
+			<Title lang="es">Unidades Medida</Title>
+			<Title lang="en">Unit Of Measurem.</Title>
+			<Function>QIEA030</Function>
+			<Type>01</Type>
+			<Tables>SAH</Tables>
+			<Tables>QEK</Tables>
+			<Tables>QE6</Tables>
+			<Tables>QE7</Tables>
+			<Tables>SFZ</Tables>
+			<Tables>SBD</Tables>
+			<Tables>SD8</Tables>
+			<Tables>SCM</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>2</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Indicador Produtos</Title>
+			<Title lang="es">Indicador Producto</Title>
+			<Title lang="en">Product Indicators</Title>
+			<Function>MATA018</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>2</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Indicador (mod.2)</Title>
+			<Title lang="es">Indicador (mod.2)</Title>
+			<Title lang="en">Indicators (mod.2)</Title>
+			<Function>MATA019</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>0</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Complem. Produtos</Title>
+			<Title lang="es">Complem. Productos</Title>
+			<Title lang="en">Product Complem.</Title>
+			<Function>MATA180</Function>
+			<Type>01</Type>
+			<Tables>SB5</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>2</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Grades de Produtos</Title>
+			<Title lang="es">Grilla de Product.</Title>
+			<Title lang="en">Product Grids</Title>
+			<Function>MATA550</Function>
+			<Type>01</Type>
+			<Tables>SB4</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Tabelas Da Grade</Title>
+			<Title lang="es">Tablas Grilla</Title>
+			<Title lang="en">Grid Tables</Title>
+			<Function>MATA551</Function>
+			<Type>01</Type>
+			<Tables>SB4</Tables>
+			<Tables>SBV</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Curva de Caracter.</Title>
+			<Title lang="es">Curva de Caract.</Title>
+			<Title lang="en">Charact. Curve</Title>
+			<Function>MATA552</Function>
+			<Type>01</Type>
+			<Tables>SAS</Tables>
+			<Tables>SAT</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Município</Title>
+			<Title lang="es">Municipio</Title>
+			<Title lang="en">City</Title>
+			<Function>FISA010</Function>
+			<Type>01</Type>
+			<Tables>CC2</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Clientes</Title>
+			<Title lang="es">Clientes</Title>
+			<Title lang="en">Customers</Title>
+			<Function>MATA030</Function>
+			<Type>01</Type>
+			<Tables>SC5</Tables>
+			<Tables>SD1</Tables>
+			<Tables>SE1</Tables>
+			<Tables>SED</Tables>
+			<Tables>SAO</Tables>
+			<Tables>AC8</Tables>
+			<Tables>AC9</Tables>
+			<Tables>JA2</Tables>
+			<Tables>SA1</Tables>
+			<Tables>SUA</Tables>
+			<Tables>SUC</Tables>
+			<Tables>SF2</Tables>
+			<Tables>DAF</Tables>
+			<Tables>DAD</Tables>
+			<Tables>SF1</Tables>
+			<Tables>SAE</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Produto X Cliente</Title>
+			<Title lang="es">Prod. Vs. Cliente</Title>
+			<Title lang="en">Product / Customer</Title>
+			<Function>MATA370</Function>
+			<Type>01</Type>
+			<Tables>SA7</Tables>
+			<Tables>SA1</Tables>
+			<Tables>SB1</Tables>
+			<Tables>VCB</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Bancos</Title>
+			<Title lang="es">Bancos</Title>
+			<Title lang="en">Banks</Title>
+			<Function>MATA070</Function>
+			<Type>01</Type>
+			<Tables>SE2</Tables>
+			<Tables>SA6</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>6</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Vendedores</Title>
+			<Title lang="es">Vendedores</Title>
+			<Title lang="en">Sales Representat.</Title>
+			<Function>MATA040</Function>
+			<Type>01</Type>
+			<Tables>SC5</Tables>
+			<Tables>SE3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Transportadoras</Title>
+			<Title lang="es">Transportadoras</Title>
+			<Title lang="en">Carriers</Title>
+			<Function>MATA050</Function>
+			<Type>01</Type>
+			<Tables>SA4</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Veiculos</Title>
+			<Title lang="es">Vehiculos</Title>
+			<Title lang="en">Vehicles</Title>
+			<Function>OMSA060</Function>
+			<Type>01</Type>
+			<Tables>DA3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>39</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Tipos de Ent/Saida</Title>
+			<Title lang="es">Tipos de Ent/ Sal</Title>
+			<Title lang="en">Types Of Inf/ Out.</Title>
+			<Function>MATA080</Function>
+			<Type>01</Type>
+			<Tables>SF4</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SD1</Tables>
+			<Tables>SD2</Tables>
+			<Tables>SF3</Tables>
+			<Tables>SB6</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>9</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Tes Inteligente</Title>
+			<Title lang="es">Tes Inteligente</Title>
+			<Title lang="en">Intelligent T I O</Title>
+			<Function>MATA089</Function>
+			<Type>01</Type>
+			<Tables>SFM</Tables>
+			<Tables>SF4</Tables>
+			<Tables>SA1</Tables>
+			<Tables>SA2</Tables>
+			<Tables>SB1</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>9</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Excecoes Fiscais</Title>
+			<Title lang="es">Excepcion Fiscal</Title>
+			<Title lang="en">Tax Exceptions</Title>
+			<Function>MATA540</Function>
+			<Type>01</Type>
+			<Tables>SF7</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>9</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Impostos Variaveis</Title>
+			<Title lang="es">Impuestos Variab.</Title>
+			<Title lang="en">Variable Taxes</Title>
+			<Function>MATA995</Function>
+			<Type>01</Type>
+			<Tables>SFB</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>9</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Cond. de Pagamento</Title>
+			<Title lang="es">Condicion de Pago</Title>
+			<Title lang="en">Payment Term</Title>
+			<Function>MATA360</Function>
+			<Type>01</Type>
+			<Tables>SE4</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>2</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Naturezas</Title>
+			<Title lang="es">Modalidades</Title>
+			<Title lang="en">Classes</Title>
+			<Function>FINA010</Function>
+			<Type>01</Type>
+			<Tables>SED</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>6</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Pauta de Frete</Title>
+			<Title lang="es">Pauta de Transp.</Title>
+			<Title lang="en">Freight Note</Title>
+			<Function>MATA545</Function>
+			<Type>01</Type>
+			<Tables>DV9</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Moedas</Title>
+			<Title lang="es">Monedas</Title>
+			<Title lang="en">Currencies</Title>
+			<Function>MATA090</Function>
+			<Type>01</Type>
+			<Tables>SM2</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>6</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Lanc. Padronizados</Title>
+			<Title lang="es">Asiento Estandar</Title>
+			<Title lang="en">Standard Entries</Title>
+			<Function>CONA010</Function>
+			<Type>01</Type>
+			<Tables>SI1</Tables>
+			<Tables>SI2</Tables>
+			<Tables>SI5</Tables>
+			<Tables>SI6</Tables>
+			<Tables>SI7</Tables>
+			<Tables>SI8</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>34</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Formulas</Title>
+			<Title lang="es">Formulas</Title>
+			<Title lang="en">Formulas</Title>
+			<Function>CFGX019</Function>
+			<Type>01</Type>
+			<Tables>SM2</Tables>
+			<Tables>SM4</Tables>
+			<Tables>SU0</Tables>
+			<Tables>SU5</Tables>
+			<Tables>SU7</Tables>
+			<Tables>SUS</Tables>
+			<Tables>SUV</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>99</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">M-messenger</Title>
+			<Title lang="es">M-messenger</Title>
+			<Title lang="en">M-messenger</Title>
+			<Function>MATA045</Function>
+			<Type>01</Type>
+			<Tables>SAN</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>99</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Estrutura Cnae</Title>
+			<Title lang="es">Estructura Cnae</Title>
+			<Title lang="en">Cnae Structure</Title>
+			<Function>FATA501</Function>
+			<Type>01</Type>
+			<Tables>CCG</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Cnae</Title>
+			<Title lang="es">Cnae</Title>
+			<Title lang="en">Cnae</Title>
+			<Function>FATA500</Function>
+			<Type>01</Type>
+			<Tables>CCG</Tables>
+			<Tables>CC3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Tp Regra Rodizio</Title>
+			<Title lang="es">Tp Regl Altern</Title>
+			<Title lang="en">Rotation Rule Type</Title>
+			<Function>FATA572</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Regras de Rodizio</Title>
+			<Title lang="es">Reglas de Altern</Title>
+			<Title lang="en">Rotation Rules</Title>
+			<Function>FATA571</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Cenarios de Venda</Title>
+		<Title lang="es">Escenarios Venta</Title>
+		<Title lang="en">Sales Overview</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Tabela de Preco</Title>
+			<Title lang="es">Tabla de Precio</Title>
+			<Title lang="en">Price Table</Title>
+			<Function>OMSA010</Function>
+			<Type>01</Type>
+			<Tables>DA0</Tables>
+			<Tables>DA1</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Regras de desconto</Title>
+			<Title lang="es">Reglas descuento</Title>
+			<Title lang="en">Discount Rules</Title>
+			<Function>FATA080</Function>
+			<Type>01</Type>
+			<Tables>ACO</Tables>
+			<Tables>ACP</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Regras de Bonific.</Title>
+			<Title lang="es">Reglas de Bonific.</Title>
+			<Title lang="en">Bonus Rules</Title>
+			<Function>FATA090</Function>
+			<Type>01</Type>
+			<Tables>ACQ</Tables>
+			<Tables>ACR</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Regras do Negocio</Title>
+			<Title lang="es">Reglas del Negocio</Title>
+			<Title lang="en">Business Rules</Title>
+			<Function>FATA100</Function>
+			<Type>01</Type>
+			<Tables>ACS</Tables>
+			<Tables>ACT</Tables>
+			<Tables>ACN</Tables>
+			<Tables>ACX</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Regras Bonif.finan</Title>
+			<Title lang="es">Reglas Bonif.finan</Title>
+			<Title lang="en">Fin.bonus Rules</Title>
+			<Function>FATA180</Function>
+			<Type>01</Type>
+			<Tables>AI1</Tables>
+			<Tables>AI2</Tables>
+			<Tables>SA1</Tables>
+			<Tables>ACY</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Verbas de Vendas</Title>
+			<Title lang="es">Conceptos de Venta</Title>
+			<Title lang="en">Sales Fund</Title>
+			<Function>FATA190</Function>
+			<Type>01</Type>
+			<Tables>ACK</Tables>
+			<Tables>ACL</Tables>
+			<Tables>SA1</Tables>
+			<Tables>ACY</Tables>
+			<Tables>SB1</Tables>
+			<Tables>ACN</Tables>
+			<Tables>ACM</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Mov. de Verbas</Title>
+			<Title lang="es">Mov. de Conceptos</Title>
+			<Title lang="en">Fund Trans.</Title>
+			<Function>FATA200</Function>
+			<Type>01</Type>
+			<Tables>ACM</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Previsao de Vendas</Title>
+			<Title lang="es">Prevision de Venta</Title>
+			<Title lang="en">Sales Forecast</Title>
+			<Function>MATA700</Function>
+			<Type>01</Type>
+			<Tables>SC4</Tables>
+			<Tables>SC2</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>10</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Categoria de Prod.</Title>
+			<Title lang="es">Categoria de Prod.</Title>
+			<Title lang="en">Prod.category</Title>
+			<Function>FATA140</Function>
+			<Type>01</Type>
+			<Tables>ACU</Tables>
+			<Tables>ACV</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Amarração Cat.xprd</Title>
+			<Title lang="es">Vinculac. Cat.xprd</Title>
+			<Title lang="en">Binding Cat.x Prod</Title>
+			<Function>FATA150</Function>
+			<Type>01</Type>
+			<Tables>SB1</Tables>
+			<Tables>ACU</Tables>
+			<Tables>ACV</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Restricoes-visitas</Title>
+			<Title lang="es">Restric.-visitas</Title>
+			<Title lang="en">Restrictions-visit</Title>
+			<Function>FATA160</Function>
+			<Type>01</Type>
+			<Tables>ACW</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Grupo de Clientes</Title>
+			<Title lang="es">Grupo de Clientes</Title>
+			<Title lang="en">Customer Group</Title>
+			<Function>FATA110</Function>
+			<Type>01</Type>
+			<Tables>ACY</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Estrutura/Clientes</Title>
+			<Title lang="es">Estructura/Cliente</Title>
+			<Title lang="en">Structure/Customer</Title>
+			<Function>FATA120</Function>
+			<Type>01</Type>
+			<Tables>ACY</Tables>
+			<Tables>SA1</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Metas de Venda</Title>
+			<Title lang="es">Metas de Venta</Title>
+			<Title lang="en">Sales Target</Title>
+			<Function>FATA050</Function>
+			<Type>01</Type>
+			<Tables>SCT</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Processo de Venda</Title>
+			<Title lang="es">Proceso de Venta</Title>
+			<Title lang="en">Sales Process</Title>
+			<Function>FATA010</Function>
+			<Type>01</Type>
+			<Tables>AC1</Tables>
+			<Tables>AC2</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Parceiros</Title>
+			<Title lang="es">Asociados</Title>
+			<Title lang="en">Partners</Title>
+			<Function>FATA030</Function>
+			<Type>01</Type>
+			<Tables>AC4</Tables>
+			<Tables>AC8</Tables>
+			<Tables>AC9</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Eventos de Visitas</Title>
+			<Title lang="es">Eventos de Visitas</Title>
+			<Title lang="en">Visit Events</Title>
+			<Function>FATA040</Function>
+			<Type>01</Type>
+			<Tables>AC5</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Concorrentes</Title>
+			<Title lang="es">Competidores</Title>
+			<Title lang="en">Competitors</Title>
+			<Function>FATA020</Function>
+			<Type>01</Type>
+			<Tables>AC3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Cargos de Contatos</Title>
+			<Title lang="es">Cargos de Contacto</Title>
+			<Title lang="en">Contact Positions</Title>
+			<Function>TMKA210</Function>
+			<Type>01</Type>
+			<Tables>SUM</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>13</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Contatos</Title>
+			<Title lang="es">Contactos</Title>
+			<Title lang="en">Contacts</Title>
+			<Function>TMKA070</Function>
+			<Type>01</Type>
+			<Tables>SU5</Tables>
+			<Tables>AC8</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>13</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Prospects</Title>
+			<Title lang="es">Prospects</Title>
+			<Title lang="en">Prospects</Title>
+			<Function>TMKA260</Function>
+			<Type>01</Type>
+			<Tables>SUS</Tables>
+			<Tables>AC8</Tables>
+			<Tables>AC9</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>13</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Unidades de Venda</Title>
+			<Title lang="es">Unidades de Venta</Title>
+			<Title lang="en">Sales Units</Title>
+			<Function>FATA510</Function>
+			<Type>01</Type>
+			<Tables>ADK</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Grupo/Represent.</Title>
+			<Title lang="es">Grupo/Represent.</Title>
+			<Title lang="en">Group/Represent.</Title>
+			<Function>FATA060</Function>
+			<Type>01</Type>
+			<Tables>ACA</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Estrutura / Vendas</Title>
+			<Title lang="es">Estructura/Ventas</Title>
+			<Title lang="en">Structure/Sales</Title>
+			<Function>FATA070</Function>
+			<Type>01</Type>
+			<Tables>SA3</Tables>
+			<Tables>ACA</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Banco Conhecimento</Title>
+			<Title lang="es">Banco Conocimiento</Title>
+			<Title lang="en">Knowledge Base</Title>
+			<Function>FATA340</Function>
+			<Type>01</Type>
+			<Tables>AC9</Tables>
+			<Tables>ACB</Tables>
+			<Tables>ACC</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>99</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Contas de Vendedor</Title>
+			<Title lang="es">Cuentas Vendedor</Title>
+			<Title lang="en">Salesman Accounts</Title>
+			<Function>FATA520</Function>
+			<Type>01</Type>
+			<Tables>ADL</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Tp. Regra Rodizio</Title>
+			<Title lang="es">Tp. Regla Alternan</Title>
+			<Title lang="en">Rotation Rule Tp.</Title>
+			<Function>FATA572</Function>
+			<Type>01</Type>
+			<Tables>ADI</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Regras de Rodízio</Title>
+			<Title lang="es">Reglas Alternancia</Title>
+			<Title lang="en">Rotation Rule</Title>
+			<Function>FATA571</Function>
+			<Type>01</Type>
+			<Tables>ADG</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Portal</Title>
+		<Title lang="es">Portal</Title>
+		<Title lang="en">Portal</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Usuarios</Title>
+			<Title lang="es">Usuarios</Title>
+			<Title lang="en">Users</Title>
+			<Function>FATA220</Function>
+			<Type>01</Type>
+			<Tables>AI3</Tables>
+			<Tables>AI4</Tables>
+			<Tables>AI5</Tables>
+			<Tables>AI6</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>99</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Menu dos Portais</Title>
+			<Title lang="es">Menu de Portales</Title>
+			<Title lang="en">Portal Menu</Title>
+			<Function>FATA240</Function>
+			<Type>01</Type>
+			<Tables>AI8</Tables>
+			<Tables>AI9</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>99</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Web Services</Title>
+			<Title lang="es">Web Services</Title>
+			<Title lang="en">Web Services</Title>
+			<Function>FATA230</Function>
+			<Type>01</Type>
+			<Tables>AI7</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>99</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Crm - Adm Vendas</Title>
+		<Title lang="es">Crm - Adm Ventas</Title>
+		<Title lang="en">Sales Admin. - Crm</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Oportunidades</Title>
+			<Title lang="es">Oportunidades</Title>
+			<Title lang="en">Opportunities</Title>
+			<Function>FATA300</Function>
+			<Type>01</Type>
+			<Tables>AD1</Tables>
+			<Tables>AD2</Tables>
+			<Tables>AD3</Tables>
+			<Tables>AD4</Tables>
+			<Tables>AD9</Tables>
+			<Tables>ADC</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Apontamentos</Title>
+			<Title lang="es">Apuntes</Title>
+			<Title lang="en">Annotations</Title>
+			<Function>FATA310</Function>
+			<Type>01</Type>
+			<Tables>AD5</Tables>
+			<Tables>AD6</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Representantes</Title>
+			<Title lang="es">Representantes</Title>
+			<Title lang="en">Representatives</Title>
+			<Function>FATA320</Function>
+			<Type>01</Type>
+			<Tables>SA3</Tables>
+			<Tables>AD1</Tables>
+			<Tables>AD2</Tables>
+			<Tables>AD3</Tables>
+			<Tables>AD4</Tables>
+			<Tables>AD5</Tables>
+			<Tables>AD6</Tables>
+			<Tables>AD7</Tables>
+			<Tables>AD8</Tables>
+			<Tables>SYP</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Despesa Financeira</Title>
+			<Title lang="es">Gastos Financieros</Title>
+			<Title lang="en">Financ. Expense</Title>
+			<Function>FATA350</Function>
+			<Type>01</Type>
+			<Tables>AA1</Tables>
+			<Tables>ABC</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Crm - Simulador</Title>
+		<Title lang="es">Crm - Simulador</Title>
+		<Title lang="en">Crm - Simulator</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Componentes</Title>
+			<Title lang="es">Componentes</Title>
+			<Title lang="en">Components</Title>
+			<Function>FATA540</Function>
+			<Type>01</Type>
+			<Tables>ADR</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Tipos de Tarefa</Title>
+			<Title lang="es">Tipos de Tarea</Title>
+			<Title lang="en">Task Types</Title>
+			<Function>FATA550</Function>
+			<Type>01</Type>
+			<Tables>ADS</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Comp. X Tarefa</Title>
+			<Title lang="es">Comp. X Tarea</Title>
+			<Title lang="en">Accompl.x Task</Title>
+			<Function>FATA560</Function>
+			<Type>01</Type>
+			<Tables>ADR</Tables>
+			<Tables>ADS</Tables>
+			<Tables>ADT</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Itens Complexidade</Title>
+			<Title lang="es">Items Complejidad</Title>
+			<Title lang="en">Complexity Items</Title>
+			<Function>FATA580</Function>
+			<Type>01</Type>
+			<Tables>ADR</Tables>
+			<Tables>ADT</Tables>
+			<Tables>ADU</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Composicoes</Title>
+			<Title lang="es">Composiciones</Title>
+			<Title lang="en">Compositions</Title>
+			<Function>PMSA010</Function>
+			<Type>01</Type>
+			<Tables>SB1</Tables>
+			<Tables>AE1</Tables>
+			<Tables>AE2</Tables>
+			<Tables>AE3</Tables>
+			<Tables>AE4</Tables>
+			<Tables>AE5</Tables>
+			<Tables>ADU</Tables>
+			<Tables>SAH</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Modelos</Title>
+			<Title lang="es">Modelos</Title>
+			<Title lang="en">Models</Title>
+			<Function>FATA530A</Function>
+			<Type>01</Type>
+			<Tables>ADM</Tables>
+			<Tables>ADN</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Crm - Int. Word</Title>
+		<Title lang="es">Crm - Int. Word</Title>
+		<Title lang="en">Crm - Int. Word</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Modelos</Title>
+			<Title lang="es">Modelos</Title>
+			<Title lang="en">Models</Title>
+			<Function>FATA620</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Componentes</Title>
+			<Title lang="es">Componentes</Title>
+			<Title lang="en">Components</Title>
+			<Function>FATA630</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Crm - Mobile</Title>
+		<Title lang="es">Crm - Mobile</Title>
+		<Title lang="en">Crm - Mobile</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Monitor</Title>
+			<Title lang="es">Monitor</Title>
+			<Title lang="en">Monitor</Title>
+			<Function>CFGX061A</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>99</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Wizard Sfa</Title>
+			<Title lang="es">Wizard Sfa</Title>
+			<Title lang="en">Wizard Sfa</Title>
+			<Function>HHWIZSFA</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Crm - Contratos</Title>
+		<Title lang="es">Crm - Contratos</Title>
+		<Title lang="en">Crm - Contracts</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Parceria</Title>
+			<Title lang="es">Asociacion</Title>
+			<Title lang="en">Partnership</Title>
+			<Function>FATA400</Function>
+			<Type>01</Type>
+			<Tables>ADA</Tables>
+			<Tables>ADB</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Orcamentos</Title>
+		<Title lang="es">Presupuestos</Title>
+		<Title lang="en">Quotations</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Sugestao Orcamento</Title>
+			<Title lang="es">Sugerenc Presupues</Title>
+			<Title lang="en">Budget Suggestion</Title>
+			<Function>MATA405</Function>
+			<Type>01</Type>
+			<Tables>SB1</Tables>
+			<Tables>SBG</Tables>
+			<Tables>SBH</Tables>
+			<Tables>SG1</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Orcamento</Title>
+			<Title lang="es">Presupuesto</Title>
+			<Title lang="en">Budget</Title>
+			<Function>MATA415</Function>
+			<Type>01</Type>
+			<Tables>SB1</Tables>
+			<Tables>SBG</Tables>
+			<Tables>SBH</Tables>
+			<Tables>SG1</Tables>
+			<Tables>SF4</Tables>
+			<Tables>SE4</Tables>
+			<Tables>SCJ</Tables>
+			<Tables>SCK</Tables>
+			<Tables>SCL</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Orcamento2</Title>
+			<Title lang="es">Presupuesto2</Title>
+			<Title lang="en">Budget2</Title>
+			<Function>U_ORC415</Function>
+			<Type>01</Type>
+			<Tables>SB1</Tables>
+			<Tables>SBG</Tables>
+			<Tables>SBH</Tables>
+			<Tables>SG1</Tables>
+			<Tables>SF4</Tables>
+			<Tables>SE4</Tables>
+			<Tables>SCJ</Tables>
+			<Tables>SCK</Tables>
+			<Tables>SCL</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Aprovacao de Venda</Title>
+			<Title lang="es">Aprobacion Venta</Title>
+			<Title lang="en">Sale Approval</Title>
+			<Function>MATA416</Function>
+			<Type>01</Type>
+			<Tables>SB1</Tables>
+			<Tables>SBG</Tables>
+			<Tables>SBH</Tables>
+			<Tables>SG1</Tables>
+			<Tables>SF4</Tables>
+			<Tables>SE4</Tables>
+			<Tables>SCJ</Tables>
+			<Tables>SCK</Tables>
+			<Tables>SCL</Tables>
+			<Tables>SC1</Tables>
+			<Tables>SC2</Tables>
+			<Tables>SC7</Tables>
+			<Tables>SB2</Tables>
+			<Tables>SB3</Tables>
+			<Tables>SC0</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Pedidos</Title>
+		<Title lang="es">Pedidos</Title>
+		<Title lang="en">Orders</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Pedidos de Venda</Title>
+			<Title lang="es">Pedidos de Venta</Title>
+			<Title lang="en">Sales Order</Title>
+			<Function>MATA410</Function>
+			<Type>01</Type>
+			<Tables>SA7</Tables>
+			<Tables>SB1</Tables>
+			<Tables>SB2</Tables>
+			<Tables>SB5</Tables>
+			<Tables>SB8</Tables>
+			<Tables>SBJ</Tables>
+			<Tables>SB9</Tables>
+			<Tables>SBE</Tables>
+			<Tables>SBF</Tables>
+			<Tables>SC0</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SD5</Tables>
+			<Tables>SBK</Tables>
+			<Tables>SD7</Tables>
+			<Tables>SDC</Tables>
+			<Tables>SF4</Tables>
+			<Tables>SGA</Tables>
+			<Tables>SM2</Tables>
+			<Tables>SDA</Tables>
+			<Tables>SDB</Tables>
+			<Tables>SBM</Tables>
+			<Tables>DAK</Tables>
+			<Tables>DAI</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Liberacao Regras</Title>
+			<Title lang="es">Liberacion Reglas</Title>
+			<Title lang="en">Rulerelease</Title>
+			<Function>FATA210</Function>
+			<Type>01</Type>
+			<Tables>ACK</Tables>
+			<Tables>ACL</Tables>
+			<Tables>ACM</Tables>
+			<Tables>ACN</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SA1</Tables>
+			<Tables>SF4</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Liberacao Pedidos</Title>
+			<Title lang="es">Liberacion Pedidos</Title>
+			<Title lang="en">Order Release</Title>
+			<Function>MATA440</Function>
+			<Type>01</Type>
+			<Tables>SBE</Tables>
+			<Tables>SBF</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SC9</Tables>
+			<Tables>SDC</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">An.credito Pedido</Title>
+			<Title lang="es">An.credito Pedido</Title>
+			<Title lang="en">Order Credit Anal.</Title>
+			<Function>MATA450</Function>
+			<Type>01</Type>
+			<Tables>SC9</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SE5</Tables>
+			<Tables>AF8</Tables>
+			<Tables>SES</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">An.credito Cliente</Title>
+			<Title lang="es">An.credito Cliente</Title>
+			<Title lang="en">Customer Credit An</Title>
+			<Function>MATA450A</Function>
+			<Type>01</Type>
+			<Tables>SC9</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SE5</Tables>
+			<Tables>AF8</Tables>
+			<Tables>SES</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Liberacao Estoque</Title>
+			<Title lang="es">Liberacion Stock</Title>
+			<Title lang="en">Stock Release</Title>
+			<Function>MATA455</Function>
+			<Type>01</Type>
+			<Tables>SC9</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SB2</Tables>
+			<Tables>SE5</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Liberacao Cred/Est</Title>
+			<Title lang="es">Liberacion Cred/St</Title>
+			<Title lang="en">Cred/St Release</Title>
+			<Function>MATA456</Function>
+			<Type>01</Type>
+			<Tables>SC9</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SB2</Tables>
+			<Tables>SE5</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Controle Reservas</Title>
+			<Title lang="es">Control Reservas</Title>
+			<Title lang="en">Reserve Control</Title>
+			<Function>MATA430</Function>
+			<Type>01</Type>
+			<Tables>SB1</Tables>
+			<Tables>SB2</Tables>
+			<Tables>SC0</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Eliminar Residuos</Title>
+			<Title lang="es">Eliminar Residuos</Title>
+			<Title lang="en">Eliminate Residues</Title>
+			<Function>MATA500</Function>
+			<Type>01</Type>
+			<Tables>SC6</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Faturamento</Title>
+		<Title lang="es">Facturacion</Title>
+		<Title lang="en">Invoicing</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Documento de Saida</Title>
+			<Title lang="es">Documento Salida</Title>
+			<Title lang="en">Outflow document</Title>
+			<Function>MATA460A</Function>
+			<Type>01</Type>
+			<Tables>SC9</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SD2</Tables>
+			<Tables>SF2</Tables>
+			<Tables>SE1</Tables>
+			<Tables>SF4</Tables>
+			<Tables>SB1</Tables>
+			<Tables>SE3</Tables>
+			<Tables>SB2</Tables>
+			<Tables>SB3</Tables>
+			<Tables>SB5</Tables>
+			<Tables>SI1</Tables>
+			<Tables>SI2</Tables>
+			<Tables>SI5</Tables>
+			<Tables>SI6</Tables>
+			<Tables>SI7</Tables>
+			<Tables>SF3</Tables>
+			<Tables>AA3</Tables>
+			<Tables>AA4</Tables>
+			<Tables>AAF</Tables>
+			<Tables>AB6</Tables>
+			<Tables>AB7</Tables>
+			<Tables>AB8</Tables>
+			<Tables>SDA</Tables>
+			<Tables>SDB</Tables>
+			<Tables>SDC</Tables>
+			<Tables>DAC</Tables>
+			<Tables>SFC</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Transfer. Filiais</Title>
+			<Title lang="es">Transf. Sucursales</Title>
+			<Title lang="en">Branch Transfer.</Title>
+			<Function>MATA310</Function>
+			<Type>01</Type>
+			<Tables>SA2</Tables>
+			<Tables>SA5</Tables>
+			<Tables>SB2</Tables>
+			<Tables>SB5</Tables>
+			<Tables>SB8</Tables>
+			<Tables>SBJ</Tables>
+			<Tables>SC7</Tables>
+			<Tables>SD1</Tables>
+			<Tables>SE1</Tables>
+			<Tables>SE2</Tables>
+			<Tables>SE3</Tables>
+			<Tables>SE4</Tables>
+			<Tables>SEF</Tables>
+			<Tables>SF1</Tables>
+			<Tables>SF3</Tables>
+			<Tables>SF4</Tables>
+			<Tables>SI1</Tables>
+			<Tables>SI2</Tables>
+			<Tables>SI5</Tables>
+			<Tables>SI6</Tables>
+			<Tables>SI7</Tables>
+			<Tables>SED</Tables>
+			<Tables>SF9</Tables>
+			<Tables>SN1</Tables>
+			<Tables>SN2</Tables>
+			<Tables>SN3</Tables>
+			<Tables>SN4</Tables>
+			<Tables>SN5</Tables>
+			<Tables>AFN</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>4</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Expedicao</Title>
+			<Title lang="es">Expedicion</Title>
+			<Title lang="en">Expedition</Title>
+			<Function>MATA512</Function>
+			<Type>01</Type>
+			<Tables>SA4</Tables>
+			<Tables>DA3</Tables>
+			<Tables>SF2</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Nfe Sefaz</Title>
+			<Title lang="es">E-fact Sefaz</Title>
+			<Title lang="en">Sefaz Nfe</Title>
+			<Function>SPEDNFE</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Nfe Iss Bh</Title>
+			<Title lang="es">Nfe Iss Bh</Title>
+			<Title lang="en">Nfe Iss Bh</Title>
+			<Function>SPEDNFSE</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Exclusao doc.saida</Title>
+			<Title lang="es">Exclus. doc.salida</Title>
+			<Title lang="en">Outfl.doc.exclus.</Title>
+			<Function>MATA521A</Function>
+			<Type>01</Type>
+			<Tables>SC9</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SD2</Tables>
+			<Tables>SF2</Tables>
+			<Tables>SE1</Tables>
+			<Tables>SF4</Tables>
+			<Tables>SB1</Tables>
+			<Tables>SE3</Tables>
+			<Tables>SB2</Tables>
+			<Tables>SB3</Tables>
+			<Tables>SB5</Tables>
+			<Tables>SF7</Tables>
+			<Tables>SI1</Tables>
+			<Tables>SI2</Tables>
+			<Tables>SI5</Tables>
+			<Tables>SI6</Tables>
+			<Tables>SI7</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Reajuste de Preco</Title>
+			<Title lang="es">Reajuste de Precio</Title>
+			<Title lang="en">Price Readjustment</Title>
+			<Function>MATA511B</Function>
+			<Type>01</Type>
+			<Tables>SC9</Tables>
+			<Tables>SC5</Tables>
+			<Tables>SC6</Tables>
+			<Tables>SD2</Tables>
+			<Tables>SF2</Tables>
+			<Tables>SE1</Tables>
+			<Tables>SF4</Tables>
+			<Tables>SB1</Tables>
+			<Tables>SE3</Tables>
+			<Tables>SB2</Tables>
+			<Tables>SB5</Tables>
+			<Tables>SI1</Tables>
+			<Tables>SI2</Tables>
+			<Tables>SI5</Tables>
+			<Tables>SI6</Tables>
+			<Tables>SI7</Tables>
+			<Tables>SF3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Sped Nfe</Title>
+			<Title lang="es">Sped Nfe</Title>
+			<Title lang="en">Sped Nfe</Title>
+			<Function>SPEDNFE</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>0</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Retorno P/Terceiro</Title>
+			<Title lang="es">Retorno P/ Tercero</Title>
+			<Title lang="en">Ret.to Third Party</Title>
+			<Function>MATA511A</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Wdb</Title>
+		<Title lang="es">Wdb</Title>
+		<Title lang="en">Wdb</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Cadastro de Jobs</Title>
+			<Title lang="es">Cadastro de Jobs</Title>
+			<Title lang="en">Cadastro de Jobs</Title>
+			<Function>CADJOB</Function>
+			<Type>03</Type>
+			<Tables>SZ1</Tables>
+			<Tables>SZ2</Tables>
+			<Tables>SZ3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>0</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Orcamentos Controlados</Title>
+			<Title lang="es">Orcamentos Controlados</Title>
+			<Title lang="en">Orcamentos Controlados</Title>
+			<Function>U_WDBORC</Function>
+			<Type>01</Type>
+			<Tables>SA1</Tables>
+			<Tables>SB1</Tables>
+			<Tables>SZ1</Tables>
+			<Tables>SZ2</Tables>
+			<Tables>SZ3</Tables>
+			<Tables>SZ4</Tables>
+			<Tables>SZ5</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Cadastro de Agendas</Title>
+			<Title lang="es">Cadastro de Agendas</Title>
+			<Title lang="en">Cadastro de Agendas</Title>
+			<Function>CADAGENDA</Function>
+			<Type>03</Type>
+			<Tables>SZ1</Tables>
+			<Tables>SZ2</Tables>
+			<Tables>SZ3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>0</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Parametros</Title>
+			<Title lang="es">Parametros</Title>
+			<Title lang="en">Parametros</Title>
+			<Function>WDBParam</Function>
+			<Type>03</Type>
+			<Tables>SZ1</Tables>
+			<Tables>SZ2</Tables>
+			<Tables>SZ3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>0</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Schedulle</Title>
+			<Title lang="es">Schedulle</Title>
+			<Title lang="en">Schedulle</Title>
+			<Function>SCHEDULLE</Function>
+			<Type>03</Type>
+			<Tables>SZ1</Tables>
+			<Tables>SZ2</Tables>
+			<Tables>SZ3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>0</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Diversos</Title>
+		<Title lang="es">Diversos</Title>
+		<Title lang="en">Miscellaneous</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Manut. de Comissao</Title>
+			<Title lang="es">Mant. de Comision</Title>
+			<Title lang="en">Commission Mainten</Title>
+			<Function>MATA490</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Atual. Pagto Comis</Title>
+			<Title lang="es">Actual. Pago Comis</Title>
+			<Title lang="en">Current Com.paym.</Title>
+			<Function>MATA530</Function>
+			<Type>01</Type>
+			<Tables>SE3</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>5</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Faturas a Receber</Title>
+			<Title lang="es">Facturas Por Cobr.</Title>
+			<Title lang="en">Invoic.receivable</Title>
+			<Function>FINA280</Function>
+			<Type>01</Type>
+			<Tables>SE1</Tables>
+			<Tables>SED</Tables>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>6</Owner>
+		</MenuItem>
+	</Menu>
+	<Menu Status="Enable">
+		<Title lang="pt">&Cupom Fiscal</Title>
+		<Title lang="es">Comprob. Fiscal</Title>
+		<Title lang="en">Tax Coupon</Title>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Redução Z</Title>
+			<Title lang="es">Reduccion Z</Title>
+			<Title lang="en">Reduction Z</Title>
+			<Function>LOJA160</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>12</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Leitura X</Title>
+			<Title lang="es">Informe X</Title>
+			<Title lang="en">Leitura X</Title>
+			<Function>LOJA170</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>12</Owner>
+		</MenuItem>
+		<MenuItem Status="Enable">
+			<Title lang="pt">Leitura M. Fiscal</Title>
+			<Title lang="es">Lectura M Fiscal</Title>
+			<Title lang="en">Tax M Reading</Title>
+			<Function>LOJA180</Function>
+			<Type>01</Type>
+			<Access>xxxxxxxxxx</Access>
+			<Module>05</Module>
+			<Owner>12</Owner>
+		</MenuItem>
+	</Menu>
+</ApMenu>

@@ -1,0 +1,2267 @@
+#Include "fileio.ch"
+#Define Confirma 1
+#Define Redigita 2
+#Define Abandona 3              
+#Include "protheus.ch"
+#INCLUDE "GPEA260WDB.CH"
+
+/*/
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ Gpea260  ³ Autor ³ Mauro Sergio          ³ Data ³ 23.04.96 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Cadastramento de Salarios                                  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Generico                                                   ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³         ATUALIZACOES SOFRIDAS DESDE A CONSTRU€AO INICIAL.             ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Programador ³ Data   ³ BOPS ³  Motivo da Alteracao                     ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Natie       ³21/03/01³------³ Alter.Chave de busca Cod. Sindicato      ³±± 
+±±³Mauro       ³03/09/01³------³ Alterar para aceitar campo virtual       ³±± 
+±±³Andreia     ³05/10/01³xxxxxx³ Totalizar verbas que compoe o salario    ³±±
+±±³Natie       ³06/03/02³Melhor³ Possibilita separar e ordenar cpos do SRA³±± 
+±±|            ³        ³------³ acordo com os grupos determ.pelo usuario ³±± 
+±±|Natie       ³23/04/02³------³ Acerto na montagem do cad.agrupam        ³±±  
+±±|Natie       ³29/04/02³------³ Inclusao Fc fAtivaBtn/acerto Manut.Agrup.³±±  
+±±|Natie       ³03/05/02³------³ Acerto gravacao aAgrup                   ³±±  
+±±|Natie       ³14/05/02³------³ Testa cpo virtual qdo monta aCols        ³±± 
+±±|Emerson     ³17/08/02³Meta  ³ Buscar sindicato pelo novo Cadastro-RCE. ³±± 
+±±|Mauro       ³27/09/03³066286³ Nao Listar C.Sindical de Outra Empresa   ³±±  
+±±|            ³        ³      ³ quando transferencia.                    ³±±  
+±±|Mauro       ³03/10/03³066709³ Alterada Lib e deve Incluir campo NOUSER ³±±  
+±±|            ³        ³      ³ para não apresentar campos de usuarios   ³±±  
+±±|            ³        ³      ³ nao selecionados para a ficha.           ³±±  
+±±|Natie       ³07/04/04³FN1375³ Forca a selecao de pelo menos 01 campo   ³±±  
+±±|Natie       ³05/05/04³B70692³ Contr.Sindical-Lista a descr. dos Sindica|±±  
+±±|            ³        ³      ³ tos de acordo c/as respectivas contrib.  ³±± 
+±±|Pedro       ³27/05/04³------³ Setar ordem 1 para busca no SX3.         ³±± 
+±±|Natie       ³07/07/04³Q00543³ Transf.entre Empresas -Listava Contr.Sind|±±  
+±±|            ³        ³      ³ da empresa de origem qdo Cod. Filial eram³±± 
+±±|            ³        ³      ³ iguais nas Empresas (Emp.CGC Diferentes) ³±± 
+±±|Natie       ³27/09/04³Q02875³ Testa se Campo eh utiliz.no  Express/Pyme|±±  
+±±|Emerson     ³28/11/04³076390³ Executa ASORT() em aCols p/ apresentacao ³±± 
+±±|            ³        ³      ³ do historico salarial.                   ³±± 
+±±|Emerson     ³29/11/04³076390³ Incluir data do aumento no ASORT().	  ³±± 
+±±|Natie       ³06/12/04³076507³ Descricao do Sindicato                   ³±± 
+±±|            ³        ³----- ³ Redimensionamento da Tela                ³±± 
+±±|            ³        ³075238³ Lista Verba id246  com  descricao        ³±± 
+±±|Natie       ³16/05/05³081251³ Descricao do Sindicato qdo possui Transf.³±± 
+±±|Natie       ³16/05/05³078390³ Impr.Contr.Sindical da empresa anterior  ³±± 
+±±|            ³        ³      ³ com  a descr. do ID246                   ³±± 
+±±|            ³        ³      ³(no caso de Transferencias entre empresas)³±± 
+±±|Ricardo D.  ³16/05/06³098722³ Inclusao do ponto de entrada gp260foto p/³±± 
+±±|            ³        ³      ³ possibilitar a personalizacao da demons- ³±± 
+±±|            ³        ³      ³ cao da foto do funcionario.              ³±± 
+±±|Pedro Eloy  ³18/05/06³095488³ Inclusao do campo do sindicato na tela   ³±± 
+±±|            ³        ³      ³ de consulta da contribuições sindicais.  ³±± 
+±±|Andreia     ³02/08/06³091771³ Tratamento para mostrar na tela "Altera- ³±± 
+±±|            ³        ³      ³ coes salariais", os salarios dos funcio- ³±± 
+±±|            ³        ³      ³ arios tarefeiros e professores.          ³±± 
+±±³Luiz Gustavo|07/12/06³Melhor³ Inclusao da funcao MenuDef() para        ³±±  
+±±³    	       ³--------³------| versao 9.12                              |±±
+±±³Pedro Eloy  ³29/12/06³109522|Ajuste na rotina para o tratamento WalkThru|±±
+±±|Andreia     ³15/02/07³116904³ Quando o funcionario for professor ou ta-³±± 
+±±|            ³        ³      ³ refeiro, mostra um botão com o historico ³±± 
+±±|            ³        ³      ³ de salarios e outro botao para historico ³±± 
+±±|            ³        ³      ³ de tarefas.                              ³±±
+±±³Luiz Gustavo³05/02/07³      ³Retiradas funcoes de ajuste de dicionario.³±±  
+±±³Pedro Eloy  ³19/03/07³109522|Tratamento na pesquisa da rotina salario. |±±
+±±³Ricardo D.  |23/03/07³122074³Ajuste da funcao MenuDef() p/nao ocorrer  ³±±  
+±±³      	   ³--------³------³nao conformidade.                         ³±± 
+±±³Luiz Gustavo³10/04/07³123393³Inclusao do botao legenda em aRotina.     ³±± 
+±±|Ricardo D.  ³15/10/07³134589³ Inclusao do ponto de entrada FCHOBTN para³±± 
+±±|            ³        ³      ³ possibilitar a inclusao de novos botoes  ³±± 
+±±|            ³        ³      ³ na enchoice.                             ³±± 
+±±|Jonatas\    ³27/11/07³136725³ Ajuste em FillGetDados, para incluir no  ³±± 
+±±|Renata      ³        ³      ³ aHeader o campo virtal RA_DESCSIN        ³±± 
+±±|Jonatas\    ³29/11/07³136725³ Incluido ajuste em FillGetDados, para    ³±± 
+±±|Renata      ³        ³      ³ somente o bAfterHeader, se for contr.sind³±± 
+±±|Kelly       ³14/02/08³131995³ Inclusao do botao para visualizacao da   ³±± 
+±±|            ³        ³      ³ Trayectoria Laboral - alteracao apenas p/³±± 
+±±|            ³        ³      ³ Mexico. Utilizacao do fonte padrao por   ³±± 
+±±|            ³        ³      ³ duplicacao desnecessaria.                ³±± 
+±±ÀÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+User Function Gpea260WBD
+
+LOCAL cFiltraSRA			//Variavel para filtro
+LOCAL aIndexSRA	:= {}		//Variavel Para Filtro
+
+Private bFiltraBrw := {|| Nil}		//Variavel para Filtro
+//--Monta o Array com os Campos do sx3 e quando usado marca com x
+Private aDicio  := {}          
+Private aDicioT := {}			//Array contendo os campos do SX3
+Private aDicioW	:= {} 			//Array auxiliar do aDicioT
+Private aDicioA	:= {} 			//Array auxiliar do aAgrup
+Private aAgrup	:= {}			//Array contendo os agrupamentos cadastrados no GPEFICHA
+Private nAgrup	:= 01
+Private nCampo	:= 0
+
+/*/
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³Acerta o Dicionario de Dados do SRA para uso no Pyme		   ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/*/
+IF FindFunction( "Pyme_Dic_Ajust" )
+	Pyme_Dic_Ajust( "SRA" , .F. )
+EndIf
+
+dbSelectArea("SX3")
+dbSetOrder(1)
+dbSeek("SRA")
+While ! Eof() .And. SX3->X3_ARQUIVO = 'SRA'
+	uCampo := SX3->X3_CAMPO
+	If (__lPyme	.and. SX3->X3_PYME="N" ) 
+		SX3->(dbSkip())
+		loop
+	Endif
+	nCampo := nCampo + 1 
+    If cPaisLoc == "BRA"
+		Aadd(aDicioT, X3Titulo()+Space(14)+CHR(179)+"["+If (X3USO(x3_usado),"X"," ")+"]"+Space(5)+SX3->X3_CAMPO+Space(3)+STRZERO(SX3->X3_tamanho,3)+STRZERO(SX3->X3_DECIMAL,2)+ strzero(nAgrup,2)+ Strzero(nCampo,3) )
+	Else
+		If X3USO(SX3->X3_USADO) .Or. !Empty(Substr(X3RESERV(SX3->X3_RESERV),8,1))
+			Aadd(aDicioT, X3Titulo()+Space(14)+CHR(179)+"["+If (X3USO(x3_usado),"X"," ")+"]"+Space(5)+SX3->X3_CAMPO+Space(3)+STRZERO(SX3->X3_tamanho,3)+STRZERO(SX3->X3_DECIMAL,2)+ strzero(nAgrup,2)+ Strzero(nCampo,3) )
+		Endif
+	EndIf
+	dbSkip()
+Enddo
+
+//--Funcao Para atualizar a configuracao da ficha
+Gpea260FhcConf()
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Define array contendo as Rotinas a executar do programa      ³
+//³ ----------- Elementos contidos por dimensao ------------     ³
+//³ 1. Nome a aparecer no cabecalho                              ³
+//³ 2. Nome da Rotina associada                                  ³
+//³ 3. Usado pela rotina                                         ³
+//³ 4. Tipo de Transa‡„o a ser efetuada                          ³
+//³    1 - Pesquisa e Posiciona em um Banco de Dados             ³
+//³    2 - Simplesmente Mostra os Campos                         ³
+//³    3 - Inclui registros no Bancos de Dados                   ³
+//³    4 - Altera o registro corrente                            ³
+//³    5 - Remove o registro corrente do Banco de Dados          ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+PRIVATE aRotina := MenuDef() // ajuste para versao 9.12 - chamada da funcao MenuDef() que contem aRotina
+
+cCadastro := OemToAnsi(STR0008)  //"Ficha de Registro"
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Verifica se o Arquivo Esta Vazio                             ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+If !ChkVazio("SRA")
+	Return
+Endif
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Inicializa o filtro utilizando a funcao FilBrowse                      ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+cFiltraRh := CHKRH("GPEA260","SRA","1")
+bFiltraBrw 	:= {|| FilBrowse("SRA",@aIndexSRA,@cFiltraRH) }
+Eval(bFiltraBrw)
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Endereca a funcao de BROWSE                                  ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+dbSelectArea("SRA")
+mBrowse( 6, 1,22,75,"SRA",,,,,,fCriaCor() )
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Deleta o filtro utilizando a funcao FilBrowse                     	   ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+EndFilBrw("SRA",aIndexSra)
+
+Return
+
+/*/
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³gp260Con  ³ Autor ³ Mauro Sergio          ³ Data ³ 23.04.96 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Programa de (Vis.,Inc.,Alt. e Del. de Afastamentos         ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Sintaxe   ³ gp260Con(ExpC1,ExpN1,ExpN2)                                ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Parametros³ ExpC1 = Alias do arquivo                                   ³±±
+±±³          ³ ExpN1 = Numero do registro                                 ³±±
+±±³          ³ ExpN2 = Numero da opcao selecionada                        ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ GPEACon                                                    ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+STATIC FUNCTION gp260Con(cAlias,nReg,nOpc,aAcho,aCpos,nColMens,cMensagem,cTudoOk)
+
+LOCAL LVar01  	:= 1
+Local nOpcA		:= 0
+Local cCpoFil	:= ""
+Local bCampo	
+Local nSavRec := RecNo()
+
+Local aAdvSize	:= {}
+Local aInfoAdvSize:= {}
+Local aObjCoords	:= {}
+Local aObjSize	:= {} 
+
+PRIVATE uCampo
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Verifica se esta' alterando um registro da mesma filial               ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+cCpoFil := Subs(cAlias,2,2)+"_FILIAL"
+IF TYPE(cCpoFil) != "U"
+	If &cCpoFil != cFilial
+		Help(" ",1,"A000FI")
+		Return 3
+	EndIf
+ENDIF
+
+//--Monta o array com os campos do SRA que aparecem na ficha
+aAcho := {}
+Aeval(aDicioT,{|x| If(Substr(x,29,1)== "X", Aadd(aAcho, Subs(x,36,10)  ),"") }) 
+//--Inclusao do campo para nao apresentar automaticamente os campos de usuario.
+Aadd(aAcho, "NOUSER    " ) 
+
+If Len(aAcho) = 0
+	Return
+Endif
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Monta a entrada de dados do arquivo                          ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+Private aTELA[0][0],aGETS[0]
+PRIVATE XXX :="SR7"
+bCampo := {|nCPO| Field(nCPO) }
+
+//If !SoftLock(cAlias)
+//    Return 3
+//Endif
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Salva a integridade dos campos de Bancos de Dados            ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+dbSelectArea("SX3")
+dbSetOrder(1)
+dbSeek("SRA")
+While ( !Eof() .And. SX3->X3_ARQUIVO == "SRA" )
+	uCampo := SX3->X3_CAMPO
+	IF ( SX3->X3_CONTEXT == "V" )
+		M->&(uCampo) := CriaVar(SX3->X3_CAMPO)
+	Else
+		M->&(uCampo) := SRA->( FieldGet(FieldPos(uCampo)) )
+	EndIf
+	dbSelectArea("SX3")
+	dbSkip()
+EndDo
+
+
+SET CENTURY ON
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Envia para processamento dos Gets                    ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+aAdvSize		:= MsAdvSize()
+aInfoAdvSize	:= { aAdvSize[1] , aAdvSize[2] , aAdvSize[3] , aAdvSize[4] , 0 , 0 } 
+aAdd( aObjCoords , { 015 , 000 , .T. , .T. } )
+aObjSize		:= MsObjSize( aInfoAdvSize , aObjCoords )
+
+DEFINE MSDIALOG oDlg TITLE OemToAnsi( cCadastro ) From aAdvSize[7],0 TO aAdvSize[6],aAdvSize[5] OF oMainWnd PIXEL 
+nReg :=IIF(nReg==NIL,RecNo(),nReg) 
+If nColMens != nil 
+	nOpcA:=EnChoice( cAlias, nReg, 2, ,"CRA","",aAcho,aObjSize[1],aCpos,,nColMens,cMensagem)
+Else
+	nOpcA:=EnChoice( cAlias, nReg, 2, ,"CRA","",aAcho,aObjSize[1],aCpos)
+Endif
+nOpca := 3
+
+ACTIVATE MSDIALOG oDlg  ON INIT FchoiceBar(oDlg,{|| nOpca := 1,oDlg:End(),.F. },{|| nOpca := 3,oDlg:End()}) 
+
+If nTData == 8
+	SET CENTURY OFF
+Else
+	SET CENTURY ON
+Endif
+
+dbSelectArea("SRA")
+dbGoTo(nSavRec)
+Return
+
+/*/
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³MontaGet()³ Autor ³ Mauro Sergio          ³ Data ³ 21.05.96 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Montar o aCols e o aHeader Para Consulta Salario           ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Sintaxe   ³ MontaGet(cAlias3)                                          ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Parametros³                                                            ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ GPEA260                                                    ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+Static Function MontaGet(cAlias3)
+
+Local GetList	:=	{}
+Local aTransf	:=	{}
+Local aHeaderAux:=	{}
+Local nOpc		:=	1
+Local nSeq		:=	0
+Local nTra		:=  0
+Local nInicio	:= If(cAlias3="RCP",1,2)
+Local nFim		:= If(cAlias3="RCP",3,2)
+Local cChave	:=	""
+Local bAfterHeader 
+
+/* 
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ Monta as Dimensoes dos Objetos         					   ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+Local aAdvSize		:= {}
+Local aInfoAdvSize	:= {}
+Local aObjCoords	:= {}
+Local aObjSize		:= {} 
+Local nCont			:= 0
+cFil := Subs(cAlias3,nInicio,nFim)+"_FILIAL"
+cMat := Subs(cAlias3,nInicio,nFim)+"_MAT"
+
+If ! ( cAlias3 $  'SRH_SRD_SRO' )
+    a260Field :={cFil,cMat}
+ElseIF cAlias3 = 'SRH'
+	a260Field := {cFil,cMat,"RH_NOME","RH_SALDIA","RH_SALHRS","RH_SALMES","RH_SALDIF","RH_SALMIN","RH_SALMIND","RH_PERC13S"}
+ElseIF cAlias3 = 'SRD'
+	a260Field := {cFil,cMat,"RD_PD","RD_DESCPD","RD_MES","RD_TIPO1","RD_TIPO2","RD_HORAS","RD_STATUS","RD_VSTATUS","RD_SEMANA","RD_EMPRESA","RD_SEQ","RD_QTDSEM","RD_INSS","RD_IR","RD_FGTS"}
+ElseIF cAlias3 = 'SRO'
+	If SRA->RA_CATFUNC $ "T"
+		a260Field := {cFil,cMat,"RO_TIPO","RO_QTDSEM"}
+	Else
+	    a260Field :={cFil,cMat}
+	EndIf
+EndIF
+
+Private aCols	:= {}
+Private nCnt	:= 0
+
+//--Variaveis para guardar os dados da Tecla F4 das Alt.Salariais
+Private aColsSR3	:= {}
+Private aHeadSr3	:= {}
+Private nUsadoR3	:= nUsoR3 := 0
+nOpcxf4				:= 2
+
+//--Matriz com Codigos da Folha
+Private aCodFol	:= {}
+
+Private aChave	:= { {cEmpAnt,SRA->( RA_FILIAL + RA_MAT ) } } //Chave para Pesquisa 
+Private aTraFE	:= {}
+Private aColsAux  	:= {}
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Carrega aCodFol                                              ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+IF !Fp_CodFol(@aCodFol,SRA->RA_FILIAL)
+   Return(.F.)
+EndIF
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Seleciona o Arquivo de Transferencias e Retorna Todas as Trans³
+//³ferencias do Funcionario (Nao Gravara Filial + Matricula  Igua³
+//³is).                                                          ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+fTransf(@aChave,,,,,,.T.,.T.)
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Garante que os Dados da Empresa/Filial Atual do Funcionario se³
+//³jam Processados.                                              ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+IF Len(aChave) > 0
+	IF SRA->( aScan( aChave,{ |x| x[1] + x[2] == cEmpAnt + RA_FILIAL + RA_MAT } ) ) == 0
+    	SRA->( aAdd(aChave,{ cEmpAnt , RA_FILIAL + RA_MAT } ) )
+    EndIF
+EndIF
+
+/*
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ Verifica se existe algum dado no arquivo                     ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+IF cAlias3 == "SRD" 
+	nCnt := 0
+	dbSelectArea( cAlias3 )
+	For nSeq	:= 1 To Len(aChave)
+		cChave	:= aChave[nSeq,2]
+		dbSeek( cChave )
+		While !Eof() .and. &cFil+&cMat == cChave
+			
+			/*
+			ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			³Identificadores de Calculo de Contribuicoes Sindicais         ³
+			ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+			IF SRD->RD_PD $ ( aCodFol[068,1] + '_' + aCodFol[246,1] ) .And. cEmpAnt == aChave[nSeq,1] 
+		 		nCnt++
+		 	EndIF
+		 	dbSelectArea( cAlias3 )
+		 	dbSkip()
+		EndDo
+	Next nSeq
+ElseIF cAlias3 == "SRE"
+		/*
+		ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		³Seleciona o Arquivo de Transferencias e Retorna Todas as Trans³
+		³ferencias do Funcionario 									   ³
+		ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+		fTransf(@aTransf,,,,,,,.T.)
+	    nCnt := 0
+		For nTra := 1 To Len(aTransf)
+			/*
+			ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			³Carrega apenas as Transferencias Entre Filiais e Empresas     ³
+			ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+			IF !( aTransf[nTra,1] == aTransf[nTra,4] ) .or. !(Subst(aTransf[nTra,2],1,2) == Subst(aTransf[nTra,5],1,2) )
+	    	   nCnt++
+    		   aAdd(aTraFE,{	aTransf[nTra,1] ,; // Empresa De
+	       						aTransf[nTra,2] ,; // Filial + Matricula De
+    	   						aTransf[nTra,3] ,; // Centro de Custo De
+	       						aTransf[nTra,4] ,; // Empresa Para
+    	   						aTransf[nTra,5] ,; // Filial + Matricula Para
+		       					aTransf[nTra,6] ,; // Centro de Custo Para
+    		   					aTransf[nTra,7] ,; // Data da Transferencia
+	       					} )
+		    EndIF
+		Next nTra
+Else
+	dbSelectArea( cAlias3 )
+	dbSeek( SRA->(RA_FILIAL + RA_MAT ) )
+	nCnt := 0
+	While !Eof() .and. &cFil+&cMat == SRA->( RA_FILIAL + RA_MAT ) 
+		IF cAlias3 == "SR8" .and. SR8->R8_TIPO # "F"
+			nCnt++
+		ElseIF !( cAlias3 $ "SR8" )
+			nCnt++
+		EndIF
+		dbSelectArea( cAlias3 )
+		dbSkip()
+	EndDo
+EndIF
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Monta a entrada de dados do arquivo                          ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+Private aTELA[0][0],aGETS[0],aHeader[0],Continua:=.F.,nUsado:=0
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³Manter a rotina do aHeader pois precisa ter o sincronismo dos campos com³
+//³o aCols, ou seja o mesmo com aHeader e com aCols.                       ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+gp260aHead(a260Field,cAlias3,cFil,cMat)
+
+//--Quando for Inclusao criar com 1 elemento
+nCnt := If (nCnt = 0,1,nCnt)
+//-------------------------------------------------------------------------
+// nUsado + 2, devido o alias e Recno  do WalkThru, feito a mão na acols.
+//------------------------------------------------------------------------
+PRIVATE aCols1[nCnt][nUsado+2]
+
+aCols	:= aCols1
+nCnt	:= 0
+nUsado	:= 0
+
+If cAlias3 == "SR7"
+	nOrdcAlias		:= RetOrdem( "SR7" , "R7_FILIAL+R7_MAT+DTOS(R7_DATA)+R7_TIPO" )
+ElseIf cAlias3 == "SRO"
+	nOrdcAlias		:= RetOrdem( "SRO" , "RO_FILIAL+RO_MAT+DTOS(RO_DATA)+RO_CODTAR" )
+ElseIf cAlias3 == "SR8"
+	nOrdcAlias		:= RetOrdem( "SR8" , "R8_FILIAL+R8_MAT+DTOS(R8_DATAINI)+R8_TIPO" )
+ElseIf cAlias3 == "SR9"
+	nOrdcAlias		:= RetOrdem( "SR9" , "R9_FILIAL+R9_MAT+R9_CAMPO+DTOS(R9_DATA)" )
+ElseIf cAlias3 == "SRB"
+	nOrdcAlias		:= RetOrdem( "SRB" , "RB_FILIAL+RB_MAT" )
+ElseIf cAlias3 == "SRH"
+	nOrdcAlias		:= RetOrdem( "SRH" , "RH_FILIAL+RH_MAT+DTOS(RH_DATABAS)+DTOS(RH_DATAINI)" )
+ElseIf cAlias3 == "SRD"
+	nOrdcAlias		:= RetOrdem( "SRD" , "RD_FILIAL+RD_MAT+RD_DATARQ+RD_PD+RD_SEMANA+RD_SEQ+RD_CC" )
+ElseIf cAlias3 == "SRE"
+	nOrdcAlias		:= RetOrdem( "SRE" , "RE_EMPD+RE_FILIALD+RE_MATD+DTOS(RE_DATA)" )
+Endif
+
+nPosRec	:= 0
+cCod 	:= SRA->RA_MAT
+
+nPosSind:= aScan( aHeader, {|x| x[2] == "RA_DESCSIN" } )
+
+If nPosSind > 0
+	aAdd( aHeaderAux, aHeader[nPosSind] )
+EndIf
+
+aHeader := {}
+
+If cAlias3 == 'SRD'
+	bAfterHeader:= {|| aAdd( aHeader, aHeaderAux[1] ) }// incluir campo virtual RA_DESCSIN no aHeader
+EndIf
+
+bMontCols	:= { || Gp260Acols(a260Field,cAlias3,cFil,cMat) }	//funcao para gravar a aCols
+FillGetDados(nOpc							,; //1-nOpcX - número correspondente à operação a ser executada, exemplo: 3 - inclusão, 4 alteração e etc;
+			 cAlias3						,; //2-cAlias - area a ser utilizada;
+			 nOrdcAlias						,; //3-nOrder - ordem correspondente a chave de indice para preencher o  acols;
+			 xFilial(cAlias3)+cCod			,; //4-cSeekKey - chave utilizada no posicionamento da area para preencher o acols;
+			 NIL							,; //5-bSeekWhile - bloco contendo a expressão a ser comparada com cSeekKey na condição  do While.
+			 NIL							,; //6-uSeekFor - pode ser utilizados de duas maneiras:1- bloco-de-código, condição a ser utilizado para executar o Loop no While;2º - array bi-dimensional contendo N.. condições, em que o 1º elemento é o bloco condicional, o 2º é bloco a ser executado se verdadeiro e o 3º é bloco a ser executado se falso, exemplo {{bCondicao1, bTrue1, bFalse1}, {bCondicao2, bTrue2, bFalse2}.. bCondicaoN, bTrueN, bFalseN};
+			 a260Field	   	    			,; //7-aNoFields - array contendo os campos que não estarão no aHeader;
+			 NIL							,; //8-aYesFields - array contendo somente os campos que estarão no aHeader;
+			 NIL							,; //9-lOnlyYes - se verdadeiro, exibe apenas os campos de usuário;
+			 NIL							,; //10-cQuery - query a ser executada para preencher o acols(Obs. Nao pode haver MEMO);
+			 bMontCols						,; //11-bMontCols - bloco contendo função especifica para preencher o aCols; Exmplo:{|| MontaAcols(cAlias)}
+			 NIL							,; //12-lEmpty
+			 aHeader						,; //13-aHeaderAux
+			 NIL							,; //14-aColAux
+ 			 NIL							,; //15-bAfterCols - Bloco de codigo a ser executado após a inclusão de uma linha no Acols
+			 NIL							,; //16-bBeforeCols - Bloco de codigo contendo expressão para sair do While, é executado antes de inserir nova linha no aCols
+			 bAfterHeader					;  //17-bAfterHeader - Bloco de codigo a ser executado após o preenchimento do aheader com os campos padrão e antes de incluir os campos reservados para o WalkThru. Ex: {|aHeader| AlterHeader(aHeader) }
+			)
+
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Gerar o array aCols com os afastamentos                      ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+nPosAli	:=	GdfieldPos(Substr(cAlias3,2,2)+"_ALI_WT")
+nPosRec	:=  GdfieldPos(Substr(cAlias3,2,2)+"_REC_WT")
+//------------------------------------------------------------------------------------------
+//aColsAux, passada para private para obter o numero do recno do registro gravado na tabela
+//-------------------------------------------------------------------------------------------
+If Len(aCols) >= 1 .And. !Empty(aCols[1][1])
+	If cAlias3 <> "SRE"
+		If nPosAli > 0 .And. nPosRec > 0
+			For nCont:= 1 to Len(aCols)
+				aCols[nCont][nPosAli]	:= cAlias3
+				aCols[nCont][nPosRec]	:= Val(Right(aColsAux[nCont][2],15))
+	
+			Next
+	     Endif
+    Endif
+	If cAlias3 == "SR7"
+		cCad1 := OemToAnsi(STR0022)  //"Altera‡äes Salariais   -  F12 Valores"
+	ElseIf cAlias3 == "SRO"
+		cCad1 := substr(OemToAnsi(STR0022),1,20)  //"Altera‡äes Salariais 
+	ElseIf cAlias3 == "SR8"
+		cCad1 := OemToAnsi(STR0035)  //"Afastamentos"
+	ElseIf cAlias3 == "SR9"
+		cCad1 := OemToAnsi(STR0024)  //"Altera‡äes Cadastrais"
+	ElseIf cAlias3 == "SRB"
+		cCad1 := OemToAnsi(STR0025)  //"Dependentes"
+	ElseIf cAlias3 == "SRH"
+		cCad1 := OemToAnsi(STR0026)  //"F‚rias"
+	ElseIf cAlias3 == "SRD"
+		cCad1 := OemToAnsi(STR0049)  //"Contribuicoes Sindicais"         
+	ElseIf cAlias3 == "SRE"
+		cCad1 := OemToAnsi(STR0052)  //"Transferencias(Filiais/Empresas)
+	ElseIf cAlias3 == "RCP"
+		cCad1 := OemToAnsi(STR0084)  //"Trayectoria Laboral
+	Endif
+
+	/* 
+	ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	³ Monta as Dimensoes dos Objetos         					   ³
+	ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+	aAdvSize		:= MsAdvSize()    					//-- Retorna a Area Util da Tela 
+	aAdvSize[3]		-= 25
+	aAdvSize[4]		-= 50
+	aAdvSize[5]		-= 50
+	aAdvSize[6]		-= 50	
+	aAdvSize[7]		+= 50
+	aInfoAdvSize	:= { aAdvSize[1] , aAdvSize[2], aAdvSize[3] , aAdvSize[4] , 0 , 0 }
+	aAdd( aObjCoords , { 000 , 000 , .T. , .T. } )
+	aObjSize		:= MsObjSize( aInfoAdvSize , aObjCoords )
+	
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Envia para processamento dos Gets                    ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+	If cAlias3 = "SR7"
+		SetKey (VK_F12,{ || Gpa260F4() })
+	Endif
+	DEFINE MSDIALOG oDlg1 TITLE OemToAnsi( cCad1 ) From ( aAdvSize[7] ) ,0 TO ( aAdvSize[6] ) , ( aAdvSize[5] ) of oDlg pixel	
+	oGet        := MSGetDados():New(aObjSize[1,1],aObjSize[1,2],aObjSize[1,3],aObjSize[1,4],2   ,""            ,""            ,"") 
+	nOpca := 3
+	ACTIVATE MSDIALOG oDlg1 ON INIT EnchoiceBar(oDlg1,{|| oDlg1:End()},{||oDlg1:End()}) 
+	If cAlias3 = "SR7"
+		Set Key VK_F12 To 
+	Endif
+
+Else
+	Help(" ",1,"GP260VAZIO")
+EndIf
+
+Return
+
+/*/
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³gp260aHead³ Autor ³ Mauro                 ³ Data ³ 23/04/96 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Criar os Arrays Aheader e aCols dos afastamentos           ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ gpea260o                                                   ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+Static Function Gp260aHead(a260Field,cAlias1,cFil,cMat)
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Salva a integridade dos campos de Bancos de Dados            ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+dbSelectArea("Sx2")
+dbseek(cAlias1)
+
+dbSelectArea("Sx3")
+dbSetOrder(1)
+dbseek(cAlias1)
+While !EOF() .And. (x3_arquivo == cAlias1)
+    IF X3USO(x3_usado) .AND. cNivel >= x3_nivel .and. ! ASCAN(a260Field,Trim(x3_campo)) > 0
+        nUsado++
+        SX3->( AADD(aHeader,{	IF(AllTrim(X3_CAMPO) == "RD_DATARQ",STR0051,TRIM(X3Titulo())), x3_campo,; //Mes da Contribuicao
+								IF(AllTrim(X3_CAMPO) == "RD_DATARQ",Space(02),x3_picture),x3_tamanho, x3_decimal, x3_valid,;
+            					x3_usado, x3_tipo, x3_arquivo } ) )
+    EndIF
+    dbSkip()
+EndDo
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Inclui Campo Para Descriacao do Sindicato                    ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+IF cAlias1 = "SRD"
+	dbSeek("SRA")
+	While !EOF() .And. (x3_arquivo == "SRA")
+    	IF	x3_CAMPO = "RA_DESCSIN" 
+        	nUsado++
+	        AADD(aHeader,{ STR0050 , x3_campo, x3_picture,x3_tamanho, ; //Sindicato
+        	  			 	x3_decimal, x3_valid,x3_usado, x3_tipo,x3_arquivo } )
+    	Exit
+    	EndIF
+	    dbSkip()
+    EndDo
+EndIF   
+
+Return
+
+/*/
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³g260aCols ³ Autor ³ Mauro                 ³ Data ³ 23/04/96 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Criar os Arrays Aheader e aCols dos afastamentos           ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ gpea260o                                                   ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+Static Function gp260aCols(a260Field,cAlias2,cFil,cMat)
+
+Local lret		:= .T.
+Local aSindica	:= {}
+//Local aColsAux  := {}
+Local cSindica	:= ""
+Local cSindAnt 	:= ""
+Local cDescAnt	:= ""
+
+Local cChave	:= ""
+Local cTitulo	:= ""
+Local cCont		:= ""
+Local nPos		:= 0
+Local nCnt		:= 0
+Local nUsado	:= 0
+Local nPosMes	:= 0
+Local dDataAux	:= SRA->RA_ADMISSA
+Local x			:= 0 
+Local y			:= 0  
+Local w			:= 0 
+Local cDescACodFol	:= ""
+Local lClasOutEmp 	:= .F.
+Local lPass		:= .f.
+IF cAlias2 == "SRD"
+	/*
+	ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	³ Acumulados Anuais                                            ³
+	ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+   	For nPos := 1 To Len(aChave)
+		cChave := aChave[nPos,2]
+		
+		dbSelectArea(cAlias2)
+		IF dbseek(cChave)
+    		While !EOF() .And. &cFil+&cMat == cChave
+	    		lClasOutEmp 	:= .F.	
+    		    /*
+				ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				³Identificadores de Calculo das Verbas de Contribuicao Sindical³
+				ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+				IF !( SRD->RD_PD $ (  aCodFol[068,1] + '_' + aCodFol[246,1] ) ) 
+   	    			dbSelectArea( cAlias2)
+        			dbSkip()
+	        		Loop
+    		    /*
+				ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				³Se a contrib.sindical foi efetuada em outra empresa, a descr. ³
+				³do sindicato sera a mesma do ID 246                           ³
+				ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+				ElseIf SRD->RD_PD $ aCodFol[246,1] .or.  (! Empty(SRD->RD_EMPRESA) .And. SRD->RD_EMPRESA # cEmpAnt) 
+					cDescACodFol	:= fDesc("SRV",aCodFol[246,1], "RV_DESC")
+					lClasOutEmp 	:= .T. 
+	    	    EndIF	
+				/*
+  	    		ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				³ Verifica se a Verba pertence a empresa Atual                 ³ 
+				ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+		       	
+    			If 	cEmpAnt # aChave[nPos,1]
+    				dbSelectArea( cAlias2)
+        			dbSkip()
+	        		Loop
+	    	    EndIF   
+				nCnt++
+				nUsado:=0
+				dbSelectArea( "SX3" )
+				dbSetOrder(1)
+        		dbSeek( cAlias2 )
+		        While !EOF() .And. X3_ARQUIVO == cAlias2
+	    	        IF X3USO(x3_usado) .AND. cNivel >= x3_nivel .and. !ASCAN(a260Field,Trim(x3_campo)) > 0 
+		                nUsado++
+           				If SX3->X3_CONTEXT # "V"
+							aCOLS[nCnt][nUsado] := IF(AllTrim(X3_CAMPO)!="RD_DATARQ",&(cAlias2+"->"+X3_CAMPO), ( nPosMes := nUsado , Subst(&(cAlias2+"->"+X3_CAMPO),-2) + left(&(cAlias2+"->"+X3_CAMPO),4) ) ) 
+						Else
+							aCols[nCnt][nUsado] :=	CriaVar(SX3->X3_campo,.T.)	
+						Endif	
+					EndIF
+					dbSelectArea("SX3")
+					dbSkip()
+				EndDo
+				aCOLS[nCnt][nUsado+1] := If(lClasOutEmp, cDescACodFol,"") 
+                //Array para armazenar o recno do walktrhu
+				AADD( aColsAux, { "XXX", StrZero((cAlias2)->(Recno()),15) } )
+
+    		    dbSelectArea( cAlias2 )
+		        dbSkip()
+			EndDo
+		EndIF
+	Next nPos
+
+	IF nCnt = 0 
+   		lRet := .F.
+	EndIF
+
+    IF lRet
+		/*
+		ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		³ Verifica se Teve Alteracao de Sindicato                      ³
+		ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+		IF Len(aChave) > 0
+			For nPos := 1 To Len(aChave)
+				cChave := aChave[nPos,2]
+				IF SR9->( dbSeek( cChave + "RA_SINDICA" ,.T.) )
+		    		dbSelectArea('SR9')
+					While SR9->( !Eof()  .and. R9_FILIAL+R9_MAT+R9_CAMPO == cChave + "RA_SINDICA" )
+			        	/*
+						ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+						³ Assume Sempre a Ultima Alteracao quando Feita no Mesmo Mes   ³
+						ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+			        	IF ( x := aScan( aSindica , { |y| MesAno( y[1] ) == MesAno( SR9->R9_DATA ) } ) ) > 0
+			        		aSindica[x,1] := SR9->R9_DATA
+			        	 	aSindica[x,2] := Subst(R9_DESC,1,2)
+							aSindica[x,3] := AllTrim( fDesc("RCE",Subst(R9_DESC,1,2),"RCE_DESCRI",40) )
+			        	Else
+			        		SR9->( aAdd( aSindica ,{ R9_DATA , Subst(R9_DESC,1,2),AllTrim( fDesc("RCE",Subst(R9_DESC,1,2),"RCE_DESCRI",40))  } ) )
+    	    			EndIF
+    	    			dbSelectArea('SR9')
+    	    			dbSkip()
+					EndDo
+				EndIF
+			Next nPos
+		EndIF
+		/*
+		ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		³ Acrescenta o Sindicato Atual do Funcionario                  ³
+		ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+		IF !Empty(aSindica)
+			/*
+			ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			³A Data Correspondente ao Sindicato Atual Deve ser Sempre Maior³
+			³Que a ultima Alteracao de Sindicato.                          ³
+			ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+			aAdd( aSindica , { IF(  dDataBase > aSindica[ Len(aSindica) , 1 ] , dDataBase , ( aSindica[Len(aSindica),1] + 360 ) ) , SRA->RA_SINDICA, AllTrim( fDesc("RCE",SRA->RA_SINDICA,"RCE_DESCRI",40))  } )
+		Else
+			aSindica := { { dDataBase , SRA->RA_SINDICA, AllTrim( fDesc("RCE",SRA->RA_SINDICA,"RCE_DESCRI",40)) } }
+		EndIF
+		cSindica := aSindica[ Len(aSindica) , 2 ]
+		cDescSin := AllTrim( fDesc("RCE",cSindica,"RCE_DESCRI",40)) 
+		/*
+		ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		³ Ordena as Alteracoes de Sindicato Ordem Crescente de Data    ³
+		ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+		aSort( aSindica,,,{ |x,y| x[1] < y[1] } ) 
+
+ 		For x := 1 To Len(aCols)
+    		For y := 1 To Len( aCols[x] ) 
+				IF ValType( aCols[x,y] ) == "D" 
+					/*
+					ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+					³ Verifica se a Alteracao esta Dentro do Periodo a Ser Listado ³ 
+					ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+					For w := 1 To Len(aSindica)
+						IF ( ( StrZero( Year( aCols[x,y] ) , 4 ) + aCols[x,nPosMes] ) >= MesAno( dDataAux ) .and. ; 
+  						     ( StrZero( Year( aCols[x,y] ) , 4 ) + aCols[x,nPosMes] ) <= MesAno( aSindica[w,1] ) )
+							If w # 1 .and.  ( StrZero( Year( aCols[x,y] ) , 4 ) + aCols[x,nPosMes] ) < MesAno( aSindica[w,1] )
+	  				    		cSindica := cSindAnt
+								cDescSin := cDescAnt
+							Else 
+	  				    		cSindica := aSindica[w,2]
+								cDescSin := aSindica[w,3]
+							Endif
+						   	dDataAux := aSindica[w,1]
+					   	   	Exit 
+						EndIF
+					   	dDataAux := aSindica[w,1]
+			    		cSindAnt := aSindica[w,2]
+				   	   	cDescAnt := aSindica[w,3]
+					Next w
+				EndIF
+			    /*
+			    ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+				³ Carrega a Descricao do Sindicato                             ³ 
+				ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+    	   	    IF aCols[x][y] == NIL   .or. Empty(aCols[x][y]) 
+		    		aCOLS[x][y] := cSindica+" - "+cDescSin 
+		        EndIF
+		    Next y
+	    Next x
+	EndIF
+
+	IF nCnt = 0
+		lRet := .F.
+	EndIF
+
+ElseIF cAlias2 == "SRE"
+		/*
+		ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+		³Carrega aCols com o Conteudo de aTraFE - Transferencias  Entre³
+		³Filiais e Empresas                                            ³
+		ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+	    IF Len(aTraFE) > 0
+			For nCnt := 1 To Len(aTraFE)
+				nUsado:=0
+				dbSelectArea( "SX3" )
+				dbSetOrder(1)
+				dbSeek( cAlias2 )
+				While !Eof() .And. X3_ARQUIVO == cAlias2
+        	    	IF x3uso(X3_USADO) .And. cNivel >= X3_NIVEL
+						nUsado++
+						IF AllTrim(X3_CAMPO)		== "RE_EMPD"
+						   aCols[nCnt,nUsado] := aTraFE[nCnt,1]
+						ElseIF AllTrim(X3_CAMPO)	== "RE_FILIALD"     
+				    			aCols[nCnt,nUsado] := Subst(aTraFE[nCnt,2],1,2)
+					    ElseIF AllTrim(X3_CAMPO)	== "RE_MATD"     
+					    		aCols[nCnt,nUsado] := Subst(aTraFE[nCnt,2],3,6)
+					    ElseIF AllTrim(X3_CAMPO)	== "RE_CCD"     
+					    		aCols[nCnt,nUsado] := aTraFE[nCnt,3]
+				   		ElseIF AllTrim(X3_CAMPO)	== "RE_EMPP"     
+				    			aCols[nCnt,nUsado] := aTraFE[nCnt,4]
+					    ElseIF AllTrim(X3_CAMPO)	== "RE_FILIALP"     
+					    		aCols[nCnt,nUsado] := Subst(aTraFE[nCnt,5],1,2)
+					    ElseIF AllTrim(X3_CAMPO)	== "RE_MATP"     
+					    		aCols[nCnt,nUsado] := Subst(aTraFE[nCnt,5],3,6)
+				    	ElseIF AllTrim(X3_CAMPO)	== "RE_CCP"     
+				    			aCols[nCnt,nUsado] := aTraFE[nCnt,6]
+					    ElseIF AllTrim(X3_CAMPO)	== "RE_DATA"     
+					    		aCols[nCnt,nUsado] := aTraFE[nCnt,7] 		
+					    EndIF
+					EndIF
+					dbSelectArea("SX3")
+					dbSkip()
+				EndDo
+				nPosAli	:=	GdfieldPos("RE_ALI_WT")
+				nPosRec	:=  GdfieldPos("RE_REC_WT")
+				If nPosAli > 0
+					aCols[nCnt,nPosAli] := cAlias2
+				EndIf
+				If nPosRec > 0
+					aCols[nCnt,nPosRec] := 	(cAlias2)->(Recno())
+				EndIf
+			Next nCnt
+
+    		IF nCnt = 0
+				lRet := .F.
+			EndIF
+		
+		Else
+			lRet := .F.
+		EndIF
+Else
+	/*
+	ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	³ Para os Demais Arquivos                                      ³
+	ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+	dbSelectArea(cAlias2)
+	IF dbseek(SRA->( RA_FILIAL + RA_MAT ) )
+    	While !EOF() .And. &cFil+&cMat == SRA->( RA_FILIAL + RA_MAT )
+			IF cAlias2 == "SR8" .AND. SR8->R8_TIPO == "F"
+				dbSelectArea( cAlias2 )
+				dbSkip()
+				Loop
+			Endif
+			nCnt++
+			nUsado:=0
+			dbSelectArea( "SX3" )
+			dbSetOrder(1)
+       		dbSeek( cAlias2 )
+	        While !EOF() .And. X3_ARQUIVO == cAlias2
+	   	        IF X3USO(x3_usado) .AND. cNivel >= x3_nivel .and. ! ASCAN(a260Field,Trim(x3_campo)) > 0
+					nUsado++
+					/*
+					ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+					³Mostrar o Titulo do Campo                                     ³
+					ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+   	   		        IF cAlias2 == "SR9" .And. Alltrim(SX3->X3_campo) = "R9_CAMPO"
+           		    	cCont := &(cAlias2+"->"+X3_CAMPO)
+	               		nPos    := Ascan(aDicioT,{ |x| Subs(x,36,10)= cCont })
+                   		IF nPos > 0
+   	   		            	cTitulo := Subs(aDicioT[nPos],1,12)
+	       	            	aCOLS[nCnt][nUsado] := cTitulo
+   	        		    Else
+       	              		aCOLS[nCnt][nUsado] := &(cAlias2+"->"+X3_CAMPO)
+	                  	Endif
+                	Else
+           				If SX3->X3_CONTEXT # "V"
+		   	           		aCOLS[nCnt][nUsado] := &(cAlias2+"->"+X3_CAMPO)
+		   	           	Else
+	               			aCols[nCnt][nUsado] :=	CriaVar(SX3->X3_campo,.T.)	
+   						Endif	
+	               	EndIF
+				EndIF
+				dbSelectArea("SX3")
+				dbSkip()
+			EndDo
+			/*
+			ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+			³ Preserva Acols e o Recno para apresentacao dos salarios      ³
+			ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+			If cAlias2 == "SR7"
+				AADD( aColsAux, { aCols[nCnt], Dtos(aCols[nCnt,1])+StrZero((cAlias2)->(Recno()),15) } )
+			Else
+				// array para controlar o recno do WalkThru
+				AADD( aColsAux, { "xxx", StrZero((cAlias2)->(Recno()),15) } )
+			EndIf
+
+    	    dbSelectArea( cAlias2 )
+	        dbSkip()
+		EndDo
+		IF nCnt = 0
+			lRet := .F.
+		EndIF
+	Else
+    	lRet := .F.
+	EndIF
+EndIF 
+
+/*
+ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+³ Executa ASORT para apresentacao do historico salarial        ³
+ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/
+If cAlias2 == "SR7"
+	ASORT( aColsAux,,, { |x,y| x[2] < y[2] } )
+	aCols := {}
+	Aeval( aColsAux, { |x| Aadd( aCols, X[1]) } )
+EndIf
+
+Return lRet
+
+/*/
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³gpa260f4  ³ Autor ³ Mauro                 ³ Data ³ 06/05/96 ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Criar os Arrays Aheader e aCols dos afastamentos           ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ gpa260f4                                                   ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+Static Function gpa260f4
+
+Local nPos1 	:= Ascan(aHeader,{ |x| x[2] = "R7_DATA"})
+Local nPos2 	:= Ascan(aHeader,{ |x| x[2] = "R7_TIPO"})
+Local nElemSr7 	:= N    // Elemento do Acols do SR7
+Local nElemSR3 	:= 0
+Local nTotVal	:= 0
+Local oTotVal
+Local nLin
+Local oDlg
+Local oFont
+Local nCont	:= 0
+
+Local aNoFields 	:= 	{"R3_FILIAL"}	
+Local nSR3Ord		:= RetOrdem( "SR3" , "R3_FILIAL+R3_MAT+DTOS(R3_DATA)+R3_TIPO+R3_PD" )
+Local bSeekWhile	:= {|| SR3->R3_FILIAL + SR3->R3_MAT + DTOS(SR3->R3_DATA) }
+Private nPosRec		:= 0
+
+//--Salva a Acols e aHeader do SR7
+aColsSr7  := aCols
+aHeadSr7  := aHeader                                       
+
+cAlias    := "SR3"
+aSR3Nao   := {"R3_FILIAL","R3_MAT","R3_TIPO","R3_DATA"}
+aColR3rec := {}   //--Array que contem o Recno() dos registros da aCols
+nUsadoR3  := 0
+
+cCod 	:= SRA->RA_MAT
+cDesc	:= SRA->RA_NOME
+dDateOpc:= DTOS(aColsSr7[n,nPos1])
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Monta a entrada de dados do arquivo                          ³
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+Private aTELA[0][0],aGETS[0],aHeader[0],Continua:=.F.
+
+//--Verifica se Ja passou alguma vez pela rotina se Nao Cria o aHeader e aCols
+If Len(aColsSR3) > 0
+   nElemSr3 := Ascan(aColsSr3,{ |X| x[1] = nElemSR7 } )
+Endif
+If nElemSR3 == 0
+	aHeader	:= {}
+	aCols	:= {}
+	FillGetDados(2								,; //1-nOpcX - número correspondente à operação a ser executada, exemplo: 3 - inclusão, 4 alteração e etc;
+				 cAlias							,; //2-cAlias - area a ser utilizada;
+				 nSR3Ord						,; //3-nOrder - ordem correspondente a chave de indice para preencher o  acols;
+				 xFilial(cAlias)+cCod+dDateOpc	,; //4-cSeekKey - chave utilizada no posicionamento da area para preencher o acols;
+				 bSeekWhile						,; //5-bSeekWhile - bloco contendo a expressão a ser comparada com cSeekKey na condição  do While.
+				 NIL							,; //6-uSeekFor - pode ser utilizados de duas maneiras:1- bloco-de-código, condição a ser utilizado para executar o Loop no While;2º - array bi-dimensional contendo N.. condições, em que o 1º elemento é o bloco condicional, o 2º é bloco a ser executado se verdadeiro e o 3º é bloco a ser executado se falso, exemplo {{bCondicao1, bTrue1, bFalse1}, {bCondicao2, bTrue2, bFalse2}.. bCondicaoN, bTrueN, bFalseN};
+				 aSR3Nao		   	    		,; //7-aNoFields - array contendo os campos que não estarão no aHeader;
+				 NIL							,; //8-aYesFields - array contendo somente os campos que estarão no aHeader;
+				 NIL							,; //9-lOnlyYes - se verdadeiro, exibe apenas os campos de usuário;
+				 NIL							,; //10-cQuery - query a ser executada para preencher o acols(Obs. Nao pode haver MEMO);
+				 NIL						)  //11-bMontCols - bloco contendo função especifica para preencher o aCols; Exmplo:{|| MontaAcols(cAlias)}
+Else
+    aHeader  := aHeadSr3
+    aCols    := aColsSr3[nElemSr3,2]
+    nUsadoR3 := nUsoR3     
+Endif
+
+nPosRec	:=  GdfieldPos("R3_VALOR")
+nTotVal	:= 0
+If nPosRec > 0
+	For nCont:= 1 to Len(aCols)
+		nTotVal += aCols[nCont][nPosRec]
+	Next
+Endif
+
+//--Desliga quando ja esta nele
+Set Key VK_F12 To
+
+nOpca := 0
+
+DEFINE MSDIALOG oDlg2 TITLE OemToAnsi(STR0016) From 18,1 To 30,80 //OF oMainWnd  //"Sal rios"
+oGet := MSGetDados():New(2,1,60,313,2,"","","",Nil)
+
+DEFINE FONT oFont  NAME "Courier New"  BOLD
+ 
+
+@ 72 ,190   SAY OemToAnsi(STR0053)  Pixel FONT oFont COLOR CLR_BLUE  //Valor Total
+@ 72 ,250 	say  transform(nTotVal,"@E 999,999,999.99") Pixel FONT oFont COLOR CLR_BLUE
+
+@ 65, 179 TO 86, 305 OF oDlg  PIXEL
+
+ACTIVATE MSDIALOG oDlg2 //ON INIT EnchoiceBar(oDlg2,{|| nOpca:=1,oDlg2:End()},{||oDlg2:End()})
+
+//Ativar o F12 quando esta nele
+SetKey (VK_F12,{ || Gpa260F4() })
+
+
+If Len(aColsSr3) > 0 .And. Ascan(aColsSr3,{ |x| x[1] == nElemSr7 } ) > 0
+	nPosR3 := Ascan(aColsSr3,{ |x| x[1] == nElemSr7 } )
+	aColsSr3[nPosR3,2] := aCols
+Else
+	Aadd(aColsSr3,{ nElemSr7 , aCols } )
+Endif
+
+aHeadSr3 := aHeader
+nUsoR3   := nUsadoR3
+aCols    := aColsSr7
+aHeader  := aHeadSr7
+cAlias   := "SR7"
+
+Return .T.
+
+/*/
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³FchoBar   ³ Autor ³R.H.-Natie             ³ Data ³          ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Poe a enchoicebar na tela                                  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Generico                                                   ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function FchoBar(oDlg,bOk,bCancel,cGrupos)
+
+Local oBar, bSet15, bSet24, lOk, oBtOk, oBtCan
+Local oBtCalc, oBtSpo, oBtHlp, oBtOrd, oBtAgr
+Local lVolta 	:=.f.     
+
+
+DEFINE BUTTONBAR oBar SIZE 25,25 3D TOP OF oDlg
+DEFINE BUTTON oBtCalc	RESOURCE "S4WB008N"		OF oBar GROUP	ACTION Calculadora()											   			TOOLTIP STR0030  			//"Calculadora..."
+oBtCalc:cTitle:= STR0070 //"Calc"
+DEFINE BUTTON 			RESOURCE "S4WB009N"		OF oBar 		ACTION Agenda()																TOOLTIP STR0031  			//"Agenda..."
+DEFINE BUTTON oBtSpo	RESOURCE "S4WB010N"		OF oBar 		ACTION OurSpool()															TOOLTIP OemToAnsi(STR0032)	//"Gerenciador de ImpressÆo..."
+oBtSpo:cTitle:= STR0071 //"Spool"
+DEFINE BUTTON oBtHlp	RESOURCE "S4WB016N"		OF oBar GROUP 	ACTION HelProg()															TOOLTIP STR0033  			//"Help de Programa..."
+oBtHlp:cTitle:= STR0072 //"Ajuda"
+DEFINE BUTTON oBtOrd   	RESOURCE "BMPORD1" 		OF oBar 		ACTION fOrdena(@aGrupos,aGrupos[oOpcao:nAt,3])                           	TOOLTIP "Ordenar"
+DEFINE BUTTON oBtAgr	RESOURCE "S4WB005N" 	OF oBar			ACTION fAgrupa(aAgrupa,oAgrup)					                     		TOOLTIP "Agrupamentos para Impressao "
+oBar:nGroups += 8
+oBtAgr:cTitle:= STR0073//"Agrupa"
+DEFINE BUTTON oBtOk 	RESOURCE "Ok" 			OF oBar GROUP 	ACTION ( lLoop:=lVolta,lOk:=Eval(bOk)) 									TOOLTIP STR0041  //"OK"###"Ok - <Ctrl-O>"
+SetKEY(15,oBtOk:bAction)                                                                                                                                                            
+oBtOk:cTitle:= STR0040 //"OK"
+DEFINE BUTTON oBtCan 	RESOURCE "Cancel" 		OF oBar 		ACTION ( lLoop:=.f.,Eval(bCancel),ButtonOff(bSet15,bSet24,.T.)) 			TOOLTIP STR0043  //"CANCEL"###"Cancelar - <Ctrl-X>"
+oBtCan:cTitle:= STR0074 //"Cancelar"
+SetKEY(24,oBtCan:bAction)
+oDlg:bSet15 := oBtOk:bAction
+oDlg:bSet24 := oBtCan:bAction
+
+oBar:bRClicked := {|| AllwaysTrue()}
+
+Return nil
+
+/*/
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³FchoiceBar³ Autor ³ ARy Medeiros          ³ Data ³          ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Poe a enchoicebar na tela                                  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ Generico                                                   ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function FchoiceBar(oDlg,bOk,bCancel)
+
+Local bSet15, bSet24, lOk, oBtOk, oBtCan
+Local oBtCalc,oBtSpo,oBtHlp,oBtSal,oBtAfas,oBtFer
+Local oBtDep,oBtCad,oBtSin,oBtTran,oBtLabo,oBtFoto,oBtTar
+Local lVolta :=.f.
+
+Private oBar
+
+DEFINE BUTTONBAR oBar SIZE 25,25 3D TOP OF oDlg
+
+DEFINE BUTTON 			RESOURCE "S4WB005N"		OF oBar 		ACTION NaoDisp()		TOOLTIP STR0027				//"s4wb006n"
+DEFINE BUTTON 			RESOURCE "S4WB006N"		OF oBar 		ACTION NaoDisp()		TOOLTIP STR0028				//"Copiar"
+DEFINE BUTTON 			RESOURCE "S4WB007N"		OF oBar 		ACTION NaoDisp()		TOOLTIP STR0029  			//"Colar"
+DEFINE BUTTON oBtCalc 	RESOURCE "S4WB008N"		OF oBar GROUP	ACTION Calculadora()	TOOLTIP STR0030  			//"Calculadora..."
+oBtCalc:cTitle:=STR0070 //"Calc"
+DEFINE BUTTON 			RESOURCE "S4WB009N"		OF oBar 		ACTION Agenda()			TOOLTIP STR0031  			//"Agenda..."
+DEFINE BUTTON oBtSpo 	RESOURCE "S4WB010N"		OF oBar 		ACTION OurSpool()		TOOLTIP OemToAnsi(STR0032)	//"Gerenciador de ImpressÆo..."
+oBtSpo:cTitle:= STR0071 //"Spool"
+DEFINE BUTTON oBtHlp 	RESOURCE "S4WB016N"		OF oBar GROUP 	ACTION HelProg()		TOOLTIP STR0033  			//"Help de Programa..."
+oBtHlp:cTitle:= STR0072 //"Ajuda"                                             
+
+If SRA->RA_CATFUNC $ "I#J#T"
+	DEFINE BUTTON oBtSal	RESOURCE "LJPRECO" 		OF oBar GROUP	ACTION MONTAGET('SRO')	TOOLTIP STR0034				//"Salarios.."
+	oBtSal:cTitle:= STR0075 //"Salario"      
+	DEFINE BUTTON oBtTar	RESOURCE "SALARIOS_OCEAN" OF oBar GROUP	ACTION MONTAGET('SRO')	TOOLTIP STR0082				//"Tarefas"
+	oBtTar:cTitle:= STR0082 //"Tarefas"
+Else
+	DEFINE BUTTON oBtSal	RESOURCE "LJPRECO" 		OF oBar GROUP	ACTION MONTAGET('SR7')	TOOLTIP STR0034				//"Salarios.."
+	oBtSal:cTitle:= STR0075 //"Salario"
+EndIf	
+DEFINE BUTTON oBtAfas	RESOURCE "AFASTAMENTO"	OF oBar			ACTION MONTAGET('SR8')	TOOLTIP STR0035  			//"Afastamentos"
+oBtAfas:cTitle:=STR0076 //"Afast."
+DEFINE BUTTON oBtFer	RESOURCE "FERIAS"		OF oBar			ACTION MONTAGET('SRH')	TOOLTIP STR0036				//"Ferias.."
+oBtFer:cTitle:= STR0077 //"Ferias"
+DEFINE BUTTON oBtDep	RESOURCE "DEPENDENTES"	OF oBar			ACTION MONTAGET('SRB')	TOOLTIP STR0037				//"Dependentes."
+oBtDep:cTitle:= STR0078 //"Depend."
+DEFINE BUTTON oBtCad	RESOURCE "note"		OF oBar			ACTION MONTAGET('SR9')	TOOLTIP OeMToAnsi(STR0024)	//"Altera‡äes Cadastrais"
+oBtCad:cTitle:= STR0079 //"Alt.Cad."
+DEFINE BUTTON oBtSin	RESOURCE "BUDGET"		OF oBar			ACTION MONTAGET('SRD')	TOOLTIP OeMToAnsi(STR0049)	//"Contribuicoes Sindicais"
+oBtSin:cTitle:= STR0080 //"Cond.Sind"
+DEFINE BUTTON oBtTran	RESOURCE "DESTINOS"		OF oBar			ACTION MONTAGET('SRE')	TOOLTIP OeMToAnsi(STR0052)	//"Transferencias(Filiais/Empresas)"
+oBtTran:cTitle:=STR0081 //"Transf."
+
+If cPaisLoc == "MEX"
+	DEFINE BUTTON oBtLabo	RESOURCE "EDIT"		OF oBar			ACTION MONTAGET('RCP')	TOOLTIP OeMToAnsi(STR0084)	//"Trayectoria Laboral"
+	oBtLabo:cTitle:=STR0085 //"T.Laboral"
+Endif
+
+DEFINE BUTTON oBtFoto	RESOURCE "MAQFOTO" 		OF oBar GROUP	ACTION GPEFOTO()		TOOLTIP OeMToAnsi(STR0039)	//"Foto"
+oBar:nGroups += 8
+
+//-- Ponto de entrada para inclusao de novos botoes.
+//-- deve utilizar a sintaxe DEFINE BUTTON no objeto "oBar".
+If ExistBlock("FCHOBTN")
+	EXECBLOCK("FCHOBTN",.F.,.F.,) 
+Endif
+
+DEFINE BUTTON oBtOk 	RESOURCE STR0040 		OF oBar GROUP ACTION ( lLoop:=lVolta,lOk:=Eval(bOk)) TOOLTIP STR0041  //"OK"###"Ok - <Ctrl-O>"
+SetKEY(15,oBtOk:bAction)
+oBtOk:cTitle:= STR0040 //"OK"
+DEFINE BUTTON oBtCan 	RESOURCE STR0042		OF oBar ACTION ( lLoop:=.f.,Eval(bCancel),ButtonOff(bSet15,bSet24,.T.)) TOOLTIP STR0043  //"CANCEL"###"Cancelar - <Ctrl-X>"
+SetKEY(24,oBtCan:bAction)
+oBtCan:cTitle:= STR0074 //"Cancelar"
+
+oDlg:bSet15 := oBtOk:bAction
+oDlg:bSet24 := oBtCan:bAction
+oBar:bRClicked := {|| AllwaysTrue()}
+Return nil
+
+/*/
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ ButtonOff| Autor ³                       ³ Data ³          ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³                                                            ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ gpea260                                                    ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+Static Function ButtonOff(bSet15,bSet24,lOk)
+DEFAULT lOk := .t.
+IF lOk
+	SetKey(15,bSet15)
+	SetKey(24,bSet24)
+EndIf
+
+Return .T.
+
+
+/*/
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ Gp260Dic ³ Autor ³ Mauro                 ³ Data ³30/05/96  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Achoice para escolha do Sx3 para a ficha                   ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ gpea260                                                    ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+Static Function Gp260Dic()
+
+Local cFile  	:= "GpeFicha.fch"
+Local cBuffer	:= ""
+Local cDet
+Local cText
+Local cPara		:= "   "
+Local n         := 0 
+Local nPos 		:= 1
+Local nHdl		:= 0 
+Local nOpt		:= 0                       
+Local aDicBkp 	:= Aclone(aDicioT)
+Local oFont3
+Local oFont
+Local oFont06
+Local oBar
+Local oBtn1
+Local oBtnMarcTod
+Local oBtnDesmTod
+Local oBtnInverte
+Local lMultSelect := .T. 
+Local oGroup1
+Local oGroup2
+Local bNIL			:= { || NIL }
+Local bSvVK_F4		:= bNIL
+Local bSvVK_F5		:= bNIL
+Local bSvVK_F6		:= bNIL 
+Local aReserv		:= {} 
+
+Private  cGrupo		:= "  " 
+Private  aGrupos 	:= {}
+Private  l1Elem		:= .F.
+Private  lFirst		:= .T.
+Private  oAgrup
+Private  oPara
+Private  oCima
+Private  oBaixo
+Private  oOpcao 
+Private  oText 
+Private  oNext
+Private  oPgNext
+Private  oPrev
+Private  oPgPrev
+Private  oBtnOrdem
+ 
+oOk := LoadBitmap( GetResources(), "Enable" )
+oNo := LoadBitmap( GetResources(), "LBNO" )
+
+aDicioW := {}
+Aeval(aDicioT,{ |x| If(substr(x,1,5)#"Agrup" , Aadd(aDicioW,{Subs(x,1,16),;   //Descricao Campo
+								   If (Subs(x,29,1) = "X",.t.,.f.),;			//usado/nao usado
+								   Subs(x,36,18) , ;                           //Campo
+								   Subs(x,54,2), ;						   		//Agrupamento
+								   Subs(x,56,3) }),"" ) })        				//Ordem
+//-- Array Combobox
+aAgrupa:={}
+Aeval(aDicioA,{|x| aadd(aAgrupa,x[2]+"-"+x[3]) })
+
+//-- Array dos Agrupamentos efetivados
+aGrupos:= {}
+Aeval(aDiciow,{| x| If(x[4] = substr(aAgrupa[1],1,2), ;
+					aAdd(aGrupos,{x[2],x[1],x[4],x[5],x[3]}),"" ) })    //Usado,Desc.Campo,Agrup,Ordem
+					
+If Len(aGrupos) <= 0
+	Aadd(AGrupos,{.f.,"","","",""})
+Endif
+
+cTitulo := oEmToAnsi(STR0044)  										//Dicion rio
+
+SETAPILHA()
+
+DEFINE FONT oFont3  NAME "Arial" BOLD
+DEFINE FONT oFont   NAME "Arial" SIZE 0,-11 
+DEFINE FONT oFont06 NAME "Arial" SIZE 01,01
+//-- Atualiza Array com os campos agrupados 
+DEFINE MSDIALOG oDlg4 FROM 05,10 TO 30.5,097 TITLE cTitulo
+			      
+	@ 015,002 Group oGroup1 To 192,180.5 PROMPT OemToAnsi(STR0009) Of oDlg4 Pixel COLOR CLR_BLUE 
+	@ 015,200 Group oGroup2 To 192,340   PROMPT OemToAnsi(STR0054) Of oDlg4 Pixel COLOR CLR_BLUE 
+	
+	//--ListBox do Dicionario de dados
+	@ 25,30 LISTBOX oUso;
+			FIELDS HEADER STR0045,STR0046,Left(STR0054,5),STR0055;  //"U."###"Campos/Agrupamento / ordem
+			SIZE 120,150 ;
+			ON DBLCLICK (aDicioW:= fTroca(aDicioW,,oUso:nAT), If(substr(cGrupo,1,2)== aDicioW[oUso:nAt,4],aGrupos:=fGrupos(aDicioW,aDicioW[oUso:nAt,4]),aGrupos),oOpcao:Refresh() , oUso:Refresh(.f.) ) ;
+			OF oDlg4 PIXEL
+			oUso:SetArray(aDicioW)
+			oUso:bLine := { || {if(aDicioW[oUso:nAt,2],oOk,oNo),OemToAnsi(aDicioW[oUso:nAt,1]),aDicioW[oUso:nAt,4],aDicioW[oUso:nAt,5] }}
+			oUso:Refresh()
+								
+	//-- Listbox dos Agrupamento efetivados
+	@ 043,210 LISTBOX oOpcao;
+			FIELDS HEADER STR0045,STR0046,Left(STR0054,5),STR0055;  //"U."###"Campos/Agrupamento / ordem
+			SIZE 120,125 OF oDlg4 PIXEL ;
+			oOpcao:SetArray(aGrupos)
+			oOpcao:bLine := { || {If(aGrupos[oOpcao:nAt,1],oOk,oNo),OemToAnsi(aGrupos[oOpcao:nAt,2]),aGrupos[oOpcao:nAt,3],aGrupos[oOpcao:nAt,4] }}
+			oOpcao:Refresh()
+           
+	//-- COMBOBOX dos Grupos cadastrados
+	@ 025,210 MSCOMBOBOX oAgrup ;							//Objeto Combo
+			VAR    cGrupo  ;
+			ITEMS  aAgrupa ;		                    	//Array dos agrupamentos existentes
+			SIZE   080,200  OF oDlg4 PIXEL ;
+            ON CHANGE ( aGrupos:=fGrupos(aDicioW,substr(cGrupo,1,2),oOpcao:Refresh()))
+			oAgrup:Setitems(aAgrupa)
+			oAgrup:Refresh()
+    
+	//-- Agrupa os Campos selecionados 
+	@ 200,365 BtnBmp oNext   Resource 'NEXT'   Size 30,25 Design ;
+	        ACTION(fCadAGrup(4,oUso:nAt,oUso,aDicioW,cGrupo,.F.) ) OF oDlg4  //-- marca somente 1
+	
+	//--  Botoes Usado/Nao Usado 						
+	@ 175,002.50 BUTTON oBtnMarcTod	PROMPT OemToAnsi(STR0056) FONT oFont06	SIZE 58,13 OF oDlg4	PIXEL  ;
+      ACTION (aDicioW:=fTroca(aDicioW,"M"),aGrupos:=fGrupos(aDicioW,substr(cGrupo,1,2) ),oUso:Refresh(),oOpcao:Refresh()) //"Marca Todos - <F4>"
+      bSvVK_F4 := SetKey(VK_F4,{ || (aDicioW:=fTroca(aDicioW,"M"),oUso:Refresh()) } )
+	@ 175,061.50 BUTTON oBtnDesmTod	PROMPT OemToAnsi(STR0057) FONT ofont06	SIZE 58,13 OF oDlg4	PIXEL ;
+	  ACTION (aDicioW:=fTroca(aDicioW,"D"),aGrupos:=fGrupos(aDicioW,substr(cGrupo,1,2) ),oUso:Refresh(),oOpcao:Refresh()) //"Desmarca Todos - <F5>"
+   	  bSvVK_F6 := SetKey(VK_F5,{ || (aDicioW:=fTroca(aDicioW,"D"),oUso:Refresh()) } )
+	@ 175,121.50 BUTTON oBtnInverte	PROMPT OemToAnsi(STR0058) FONT ofont06	SIZE 58,13 OF oDlg4	PIXEL ;
+	  ACTION (aDicioW:=fTroca(aDicioW,"I"),aGrupos:=fGrupos(aDicioW,substr(cGrupo,1,2) ),oUso:Refresh(),oOpcao:Refresh()) //"Inverte Sele‡„o - <F6>"
+	  bSvVK_F6 := SetKey(VK_F6,{ || (aDicioW:=fTroca(aDicioW,"I"),oUso:Refresh()) } )
+
+ACTIVATE MSDIALOG oDlg4 CENTERED ON INIT fChoBar(oDlg4, ;
+												 {||If( !f260Vazio(aDicBkp) , (nOpt := 1.00 , oDlg4:End(),.F.), ( nOpt := 0 ) )},;
+												 {|| nOpt := 3,oDlg4:End()},;
+												  aDicioW[oUso:nAt,4] )
+
+SETAPILHA()
+
+SetKey( VK_F4	,	IF( Empty( bSvVK_F4 ) , bNIL , bSvVK_F4 ) )
+SetKey( VK_F5	,	IF( Empty( bSvVK_F5 ) , bNIL , bSvVK_F5 ) )
+SetKey( VK_F6	,	IF( Empty( bSvVK_F6 ) , bNIL , bSvVK_F6 ) )
+
+//--volta o Array da tela para o aDicioT para ser gravado
+If nOpt == 1
+	aDicioT := {}
+	nAGrup:= Len(aAgrupa)
+	For n=1 to nAgrup
+		aAdd(aDicioT, "Agrup"+space(4)+ subs(aAgrupa[n],1,2)+ subs(aAgrupa[n],4,20) + space(27) )
+	Next n
+	Aeval(aDicioW,{ |x| Aadd(aDicioT,Subs(x[1],1,12)+Space(14)+CHR(179)+"["+If (x[2],"X"," ")+"]"+Space(5)+x[3]+x[4]+x[5] )})
+Endif 
+
+DeleteObject(oOk)
+DeleteObject(oNo)
+
+
+//--Quando confirma grava o Arquivo GpeFicha.fch
+If nOpt == 1
+	nHdl := MSFCREATE(cFile,FC_NORMAL)
+	If nHdl == -1   .or. fError() # 0 
+		Help(" ",1,"SAVECONS")
+	Else
+		For n=1 to Len(aDicioT)
+			cDet	:= aDicioT[n]+Chr(13)+Chr(10)
+			fWrite(nHdl,cDet,Len(cDet) )
+		Next
+	EndIf
+	FClose(nHdl)    //Fecha arq.binario e grava no disco 
+Else
+	aDicioT	:= Aclone(aDicBkp)
+EndIf
+
+Return
+
+/*/
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³ nTeclaCh ³ Autor ³ Mauro                 ³ Data ³30/05/96  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Achoice para escolha do Sx3 para a ficha                   ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ gpea260                                                    ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+Static Function nTeclaCh(nModo,nApos)
+
+Local nRet := 2
+
+nTecla := LastKey()
+If nTecla == K_RETURN
+	If Subs(ADicioT[nAPos],29,1) = "X"
+		aDicioT[nAPos] := Subs(ADicioT[nAPos],1,28)+" "+']'+Subs(aDicioT[nAPos],31,28)
+	Else
+		aDicioT[nAPos] := Subs(ADicioT[nAPos],1,28)+"X"+']'+Subs(aDicioT[nAPos],31,28)
+	EndIf
+	nRet := 2
+ElseIf nTecla == K_ESC
+	nRet := 0
+EndIf
+Return nRet
+
+/*/
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿±±
+±±³Fun‡…o    ³Gpea260FhcConf³Autor³Mauro                ³ Data ³31/05/96  ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´±±
+±±³Descri‡…o ³ Verifica se Existe o Arquivo e Configura o array do Sx3    ³±±
+±±ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´±±
+±±³ Uso      ³ gpea260                                                    ³±±
+±±ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß*/
+Static Function Gpea260FhcConf()
+
+Local cFile  	:= "GpeFicha.fch"
+Local aDicFch 	:= {}
+Local n,nTamArq ,nBuffer 
+Local cBuffer
+Local lAnt	:= .F.					// velho layout
+aAGrup	:= {}
+
+If File("GpeFicha.fch")
+
+	//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+	//³ Le arquivo texto - Nro total de linhas     ³
+	//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+	nHdl    := Fopen(cfile,2+64)				//Abertura e gravacao e compartilhamento
+
+	If nHdl <= 0
+		return .f. 
+	EndIf
+	cString	:= FReadStr(nHdl,60)
+	//nTamanho:=(At(CHR(13)+CHR(10),cString))		// Tamanho do registro
+	If left(cString,5) # "Agrup"
+		nBuffer	:= 55
+		lAnt	:= .T.
+		If Empty(aAgrup)
+			aAdd(aAgrup,"Agrup" +space(4)+"01"+STR0059+ space(28) )
+			aAdd(aAgrup,"Agrup" +space(4)+"02"+STR0060+ space(28) )
+			aAdd(aAgrup,"Agrup" +space(4)+"03"+STR0061+ space(28) )
+		Endif
+	Else
+		nBuffer	:= 60
+	Endif
+	nTamArq := fSeek(nHdl,0,2)
+	fSeek(nHdl,0,0)
+	nFor := nTamArq / nBuffer
+	cBuffer	:= space(nBuffer)
+	FRead(nHdl,@cBuffer,nBuffer)
+	
+	For n=1 to nFor
+		If left(cBuffer,5)="Agrup" .and. !lAnt 
+			aAdd(aAgrup,cBuffer)
+		Else
+			Aadd(aDicFch,cBuffer)
+		Endif	
+		cBuffer	:= space(nBuffer)
+		FRead(nHdl,@cBuffer,nBuffer)
+	Next n
+        
+	For n:= 1 to Len(aDicioT)
+		nPos := Ascan(aDicFch,{ |x| Subs(x,36,10)=Subs(aDicioT[n],36,10) })
+		If nPos > 0
+			If lAnt
+				aDicioT[n] := Subs(ADicioT[n],1,28)+Subs(aDicFch[nPos],29,1)+']'+Subs(aDicioT[n],31,23)+Subs(aDicioT[n],54,2)+Subs(aDicioT[n],56,3)				//mantem a ordem do SX3 para ser alterada pelo usuario
+			Else
+				aDicioT[n] := Subs(ADicioT[n],1,28)+Subs(aDicFch[nPos],29,1)+']'+Subs(aDicioT[n],31,23)+Subs(aDicFch[nPos],54,2)+Subs(aDicFch[nPos],56,3)     	//mantem  a ordem determinada pelo usuario
+			Endif
+		Endif
+	Next n
+	FClose(nHdl)
+Else
+	aAgrup	:= {}
+	aAdd(aAgrup,"Agrup" +space(4)+"01"+STR0059+ space(28) )
+	aAdd(aAgrup,"Agrup" +space(4)+"02"+STR0060+ space(28) )
+	aAdd(aAgrup,"Agrup" +space(4)+"03"+STR0061+ space(28) )
+EndIf
+
+aDicioA := {}
+Aeval(aAgrup,{ |x| Aadd(aDicioA,{Subs(x,1,05),;
+		 						 Subs(x,10,02),;	//Agrupamento
+								 Subs(x,12,20);    	//Descricao
+								  })})
+
+aDicioT	:= aSort(aDicioT,,,{|x,y| Substr(x,54,2)+ Substr(x,56,3) < Substr(y,54,2)+Substr(y,56,3)})
+aAgrup	:= aSort(aAgrup,,,{ |x,y| substr(x,10,2) < SUBSTR(Y,10,2)})
+aDicioA	:= aSort(aDicioA,,,{ |x,y| x[2] < y[2] })
+
+Return Nil
+
+*******************
+STATIC FUNCTION GPEFOTO()
+*******************
+Local oDlgF
+Local oBmp
+Local lGp260Foto	:= ExistBlock("GP260FOTO")
+
+If !lGp260Foto
+	DEFINE MSDIALOG oDlgF FROM 12,40 TO 23,57 TITLE STR0039  //"Foto"  
+	
+	@ 00,00 REPOSITORY oBmp OF ODLGF SIZE 60,73 
+	
+	ACTIVATE MSDIALOG oDlgF ON INIT (oBmp:lStretch := .T.,ShowBitmap(oBmp,SRA->RA_BITMAP))
+Else
+	//-- Ponto de Entrada para permitir a busca e exibicao das fotos dos funcionarios
+	//-- buscando as fotos de outra localizacao e montando a tela de exibicao da forma
+	//-- que melhor convier ao cliente.
+	EXECBLOCK("GP260FOTO",.F.,.F.)
+Endif
+
+Return
+
+
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³GPEA260   ºAutor  ³Microsiga -Natie    º Data ³  12/31/01   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³fCadAgrup() - Cadadastro de Agrupamentos                    º±±
+±±º          ³nQual	: 1-Acima/2-Abaixo/3-Alt.Ordem/4-Cad.Agr./5-Incç.Agrupº±±
+±±º          ³nEstou: Posicao atual                                       º±±
+±±º          ³oLbx  : Objeto                                              º±±
+±±º          ³aLbx  : Array                                               º±±
+±±º          ³cPara : Variavel contendo o agrup. para troca               º±±
+±±º          ³nProcesso: Logico (1-Incl. 2-Edita  3-exclui                º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function fCadAgrup(nQual,nEstou,oLbx,aLbx,cPara,nProcesso)
+Local aAux 	:={},aLbxBkp:= {}
+Local aSalva:={}
+Local nAlbx	:= 0
+Local nCont	:= 0 
+Local nElem := Len( aLbx )
+Local nPos	:= 0
+Local nPos1	:= 0 
+Local nPos2	:= 0
+Local nx	:= 0
+Local nOrdem := 0
+Local i		:= 0  	
+
+IF nQual == 1		//Inverter Acima
+	IF nEstou # 1                                                  
+		aAux	:= aClone( aLbx[ nEstou		] )
+		aLbx[ nEstou      ]			:= aClone( aLbx[ nEstou - 1 ] )
+		aLbx[ nEstou - 1  ]			:= aClone( aAux )
+		oLbx:nAt					:= nEstou - 1
+		aLbx[ oLbx:nAt 	   , 04 ]	:= StrZero( oLbx:nAt , 03 )
+		aLbx[ oLbx:nAt + 1 , 04 ]	:= StrZero( oLbx:nAt + 1 , 03 )
+	EndIF
+ElseIF nQual == 2	//Inverter Abaixo
+	IF 	nEstou # nElem
+		aAux 						:= aClone( aLbx[ nEstou ]	  )
+		aLbx[ nEstou      ]			:= aClone( aLbx[ nEstou + 1 ] )
+		aLbx[ nEstou + 1  ]			:= aClone( aAux )
+		oLbx:nAt					:= nEstou + 1
+		aLbx[ oLbx:nAt 	   , 04 ]	:= StrZero( oLbx:nAt , 03 )
+		aLbx[ oLbx:nAt - 1 , 04 ]	:= StrZero( oLbx:nAt - 1 , 03 )
+	EndIF
+	
+ElseIf nQual == 3	// Altera Ordem dos campos
+	IF !Empty( cPara )
+		IF Val( cPara ) >= nElem
+			cPara := StrZero( nElem , 3 )
+		ElseIF Val( cPara ) <= 0.00 
+			cPara := StrZero( 1 , 3 )
+		EndIF
+		If ( nPos := aScan( aLbx ,{ |x| Val( x[4] ) == Val( cPara ) } ) ) > 0.00
+			aSalva		:= {}
+			aAdd(aSalva,{aLbx[nEstou,1],aLbx[nEstou,2],aLbx[nEstou,3],aLbx[nEstou,4],aLbx[nEstou,5]})
+			aDel(aLbx,nEstou)
+			aSize(aLbx,Len(aLbx)-1)
+			aAux		:= aClone(aLbx)
+			aLbx		:= {}
+			nCont		:= 0
+			nx			:= 0 
+			While nx < Len(aAux)
+				nx	  	:= nx + 1 			// Contador 
+				nCont	:= nCont +  1		// Ordem dos campos
+				If 	nPos = nx  
+					Aadd(aLbx,{aSalva[1][1],aSalva[1][2],aSalva[1][3],cPara,aSalva[1,5] })
+					nCont := nCont +  1
+					Aadd(aLbx,{aAux[nx][1],aAux[nx][2],aAux[nx][3],StrZero(nCont,3),aAux[nx][5]})
+				Else			
+					Aadd(aLbx,{aAux[nx][1],aAux[nx][2],aAux[nx][3],StrZero(nCont,3),aAux[nx][5]})
+				EndIf
+			EndDo 
+			//-- 
+			If (nPos:= aScan(aLbx,{|x| Val(x[4]) == Val(cPara) })) == 0 
+				Aadd(aLbx,{aSalva[1][1],aSalva[1][2],aSalva[1][3],cPara,aSalva[1][5] })
+			Endif
+		Endif 
+	EndIF
+	aSort(aLbx,,,{|x,y| x[3]+x[4]<y[3]+y[4] }) 
+	oLbx:SetArray(aLbx)  
+	oLbx:bLine := { || {If(aLbx[oLbx:nAt,1],oOk,oNo),OemToAnsi(aLbx[oLbx:nAt,2]),aLbx[oLbx:nAt,3],aLbx[oLbx:nAt,4] }}
+ElseIf nQual ==5
+	If nProcesso == 1 		//Inclusao de Novo Agrupamento
+		nPos:= Ascan(aLbx,{|x| substr(x,1,2) = cAgrup })
+		If nPos <= 0     	// Inclui Descricao 
+			If !Empty(cAgrup) .or. !empty(cDescr)
+				aAdd(aLbx,cAgrup+"-"+cDescr )
+			Endif
+		Else
+			MsgAlert(STR0066,STR0018)
+			Return .f.
+		Endif
+		cDescr	:= Space(20)
+		cAgrup	:= Space(02)		
+	ElseIf nProcesso ==2   // Altera descricao de agrupamento
+		If Empty(cDescr)
+			Return .F.
+		Endif	
+		aLbx[nEstou]	:= substr(albx[nEstou],1,3)+ cDescr
+		oLbx:SetArray(aLbx)
+		oLbx:nAt  		:= nEstou
+	Else					// Delecao de Agrupamentos
+		If MsgNoYes(STR0062 + "   " +STR0054 + " " + aLbx[nEstou] )
+			//-- Verifica se E Agrupamentos com este codigo 
+			nPos:=aScan(aDicioW,{|x|x[4] == substr(aLbx[nEstou],1,2) })
+			If Len(aLbx) == 1						
+				MsgAlert(oEmToAnsi(STR0069),STR0018)			// nao exclui qdo ha apenas 1 agrupamento
+				oAgrup:SetItems(aAgrupa)
+				oLbx:SetArray(aLbx)
+				oLbx:bLine := { || { substr(aLbx[oLbx:nAt],1,2),Substr(aLbx[oLbx:nAt],4,20) } }				
+				Return .F.
+			Endif
+			If  (nPos > 0 .and. MsgNoYes(oEmToAnsi(STR0068))  ) .or. nPos = 0
+				aAux	:= aLbx[nEstou]
+				aLbxBkp	:= aClone(aLbx)
+				aLbx	:= {}
+				nAlbx	:= Len(aLbxBkp)
+				nEstou1	:= nEstou1 -1
+			    For i= 1 to  nALbx
+					If aLbxBkp[i] # aAux .and. !Empty(aAux)
+						aAdd(aLbx, aLbxBkp[i] )
+					Endif
+				Next i 
+			Endif	
+		Endif		
+	Endif
+	//-- Acerta Ordem  dos dados
+	aSort(aLbx,,,{|x,y| x < y })	
+	oAgrup:SetItems(aAgrupa)
+	oAgrup:Refresh()
+	oLbx:SetArray(aLbx) 
+	oLbx:Refresh()
+	oLbx:bLine := { || { substr(aLbx[oLbx:nAt],1,2),Substr(aLbx[oLbx:nAt],4,20) } }
+Endif
+// Efetua troca dos Agrupamentos 
+If nQual == 4
+	cGrupo 	:= substr(cPara,01,02)
+	//-- Verifica se existe o agrupamento  cadastrado
+	nPos  	:= Ascan(aAgrupa,{|x| Subs(x,1,2) = cGrupo } )
+	If nPos <=  0
+		MsgAlert(STR0023,STR0018)
+		Return .F.
+	Else
+		If cGrupo == aLbx[nEstou,4]
+			Return .f.
+		Endif
+		aLbxBkp	:= {}
+		Aeval(albx,{|x| If(cGrupo= x[4], Aadd(aLbxBkp,{x[1],x[2],x[3],x[4],x[5]}),"") })
+		nAlbx		:= Len(aLbxBkp)
+		cGrupoAux	:= aLbx[nEstou][4]                                                  
+		//-- Checa ja existe o agrupamento no dicionario
+		If nAlbx > 0
+			aadd(aLbxBkp,{aLbx[nEstou,1],aLbx[nEstou,2],aLbx[nEstou,3],cGrupo,StrZero(nAlbx + 1, 3)} )
+			For I:= 1 to (naLbx + 1)
+			
+				nPos2  	:= Ascan(aLbx,{|x| aLbxBkp[I,3] = x[3] } )
+				If nPos2 > 0
+					aLbx[nPos2,4]	:= aLbxBkp[I,4]
+					aLbx[nPos2,5]	:= aLbxBkp[I,5]
+				Endif
+			Next i 		
+		Else			//-- Primeira ocorrencia
+			aadd(aLbxBkp,{aLbx[nEstou,1],aLbx[nEstou,2],aLbx[nEstou,3],cGrupo,StrZero(nAlbx + 1, 3)} )
+			aLbx[nEstou,4]	:= cGrupo
+			aLbx[nEstou,5]	:= "001"
+			//-- Ativa botao de ordenacao
+			fAtivaBtn(aLbxBkp,oBtnOrdem)
+		Endif
+	
+		//-- Acerta Ordem 
+		nX	:= 0
+		nTam:= 0             
+
+		While nTam < Len(aLbx)
+		    nTam:= nTam+ 1
+		    nX	:= nX  + 1 
+			If cGrupoAux == aLbx[nx][4]
+			    nOrdem	:= nOrdem + 1
+				aLbx[nX][5]	:= Strzero(nOrdem,3)
+			Endif
+		Enddo
+
+	Endif
+	aLbx := aSort(aLbx,,,{|x,y| x[4]+x[5]<y[4]+y[5] })
+	oLbx:SetArray(aLbx)
+	oLbx:bLine := { || {if(aLbx[oLbx:nAt,2],oOk,oNo),OemtoAnsi(aLbx[oLbx:nAt,1]),aLbx[oLbx:nAt,4],aLbx[oLbx:nAt,5] }}
+
+    //-- Array auxiliar com  os campos agrupados
+	aGrupos	:= {}
+	Aeval(aLbxBkp,{|x| , aAdd(aGrupos,{x[2],x[1],x[4],x[5],x[3]} ) })   //U./Campo/Agrup/Ordem
+	oOpcao:SetArray(aGrupos)
+	oOpcao:bLine := { || {If(aGrupos[oOpcao:nAt,1],oOk,oNo),oEmToAnsi(aGrupos[oOpcao:nAt,2]),aGrupos[oOpcao:nAt,3],aGrupos[oOpcao:nAt,4] }}
+	oOpcao:Refresh()
+EndIf
+
+oLbx:Refresh()
+
+Return .T.
+
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³fAgrupa() ºAutor  ³Microsiga -Natie    º Data ³  11/06/01   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³Efetua Cadastramento/alteracao de agrupamentos              º±±
+±±º          ³                                                            º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function fAgrupa(aLbxBkp,oAGrupAux)
+
+Local cTitulo	:= ""
+Local cDet 		:= ""
+Local nOpt1		:= 0
+Local nHdl		:= 0
+Local nAGrup	:= 0 
+Local n			:= 0 
+Local cFile  	:= "GpeFicha.fch"
+Local aDicAgr	:= aClone(aLbxBkp)              // Agrupamentos
+Local oFont3
+Local oBtn1
+Local oBtn2
+Local oBtn3
+Local oGroup2
+Local oGroup0
+Local oOk
+Local oNo
+Local oAtu
+Local oDlg5
+
+Private cAgrup	:= space(2)
+Private cDescr	:= space(20)
+
+	oOk := LoadBitmap( GetResources(), "Enable" )
+	oNo := LoadBitmap( GetResources(), "LBNO" )
+	
+	cTitulo := oEmToAnsi(STR0054)  									//Agrupamentos
+		
+	DEFINE FONT oFont3  NAME "Arial" BOLD	
+	DEFINE MSDIALOG oDlg5 FROM 05,25 TO 25,65 TITLE cTitulo
+	
+	@ 15,01 Group oGroup0 To 140,155 Of oDlg5 Pixel COLOR CLR_BLUE
+	@ 25,21 LISTBOX oAtu ;
+	    FIELDS HEADER OemtoAnsi(STR0047),OemToAnsi(STR0021) ;
+	    SIZE 110,070 OF oDlg5 PIXEL
+		oAtu:SetArray(aLbxBkp)
+		oAtu:bLine := { || { substr(aLbxBkp[oAtu:nAt],1,2),OemToAnsi(substr(aLbxBkp[oAtu:nAt],4,20)) } }
+		oAtu:Refresh()
+
+
+	@ 100,015  GROUP oGroup2 TO 130,140 OF oDlg5  PIXEL COLOR CLR_BLUE
+		DEFINE SBUTTON oBtn1 FROM 110,020  TYPE 04 ENABLE OF oDlg5 ;
+		       Action (fIncGrupo(@oAtu,@aLbxBkp,oAtu:nAT), oAgrupAux:Refresh())       // Inclui
+		DEFINE SBUTTON oBtn2 FROM 110,060  TYPE 11 ENABLE OF oDlg5 ;
+		       Action (fEdiGrupo(@oAtu,@aLbxBkp,oAtu:nAT), oAgrupAux:Refresh())       // Edita
+		DEFINE SBUTTON oBtn3 FROM 110,105  TYPE 03 ENABLE OF oDlg5 ;
+			   Action (fExcGrupo(@oAtu,@aLbxBkp,oAtu:nAT),	oAgrupAux:Refresh())       // Exclui
+
+	ACTIVATE DIALOG oDlg5 CENTERED 	
+	
+	SETAPILHA()     
+
+	DeleteObject(oOk)
+	DeleteObject(oNo)
+
+	//--Atualiza dados
+	aDicioT := {}
+	aDicioA := {}
+	nAGrup:= Len(aLbxBkp)
+	For n=1 to nAgrup 
+		aAdd(aDicioT, "Agrup"+ space(4)+ substr(aLbxBkp[n],1,2)+substr(aLbxBkp[n],4,20) + space(27))
+		aAdd(aDicioA, {"Agrup",substr(aLbxBkp[n],1,2),substr(aLbxBkp[n],4,20)})
+	Next n	
+	Aeval(aDicioW,{ |x| Aadd(aDicioT,Subs(x[1],1,12)+Space(14)+CHR(179)+"["+If (x[2],"X"," ")+"]"+Space(5)+x[3]+x[4]+x[5] )})
+       	
+	aAgrup		:= {}                                                       
+	Aeval(aLbxBkp,{ |x| Aadd(aAgrup ,"Agrup"+space(4)+ substr(x,1,2)+ substr(x,4,20)+ space(27)  ) })
+
+	//--Quando confirma grava o Arquivo GpeFicha.fch
+	nHdl := MSFCREATE(cFile,FC_NORMAL)
+	If nHdl == -1   .or. fError() # 0 
+		Help(" ",1,"SAVECONS")
+	Else
+		For n=1 to Len(aDicioT)
+			cDet	:= aDicioT[n]+Chr(13)+Chr(10)
+			fWrite(nHdl,cDet,Len(cDet) )
+		Next
+	EndIf
+	FClose(nHdl)    //Fecha arq.binario e grava no disco 
+	Return 
+
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³fIncGrupo ºAutor  ³Microsiga -Natie    º Data ³  25/03/02   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³Insere Agrupamentos                                         º±±
+±±º          ³                                                            º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function fIncGrupo(oGrAux,aLbxAx,nEstou)
+Local oDlg7
+Local nOpt1                      
+Local oGroup1,oGroup2
+Local oFont3 
+
+cAgrup	:= space(2)
+cDescr	:= space(20)
+
+oOk := LoadBitmap( GetResources(), "Enable" )
+oNo := LoadBitmap( GetResources(), "LBNO" )
+	
+	cTitulo := oEmToAnsi(STR0063)  									//Inclui
+
+	DEFINE FONT oFont3  NAME "Arial" BOLD
+
+	DEFINE MSDIALOG oDlg7 FROM 05,25 TO 15,62 TITLE cTitulo    		//Pixel FONT oFont3 COLOR CLR_BLUE
+
+	@ 020,001  GROUP oGroup2 TO 060,140 OF oDlg7 ;
+    		   PIXEL COLOR CLR_BLUE
+			   oGroup2:SetFont(oFont3)
+		@ 031,008 SAY OemtoAnsi(STR0047)  SIZE 65,17 OF oDlg7 PIXEL FONT oFont3 
+		@ 031,032 SAY OemtoAnsi(STR0021)  SIZE 65,17 OF oDlg7 PIXEL FONT oFont3 
+		@ 040.5,005 GET  cAgrup           SIZE 15,07 OF oDlg7 PIXEL FONT oFont3 
+		@ 040.5,030 GET  cDescr		      SIZE 70,07 of oDlg7 PIXEL FONT oFont3 
+
+		DEFINE SBUTTON    oBtn4 FROM 037.5,110  TYPE 1 ENABLE OF oDlg7 Action  fCadAgrup(5,oGrAux:nAt,@oGrAux,@aLbxAx,,1) //Altera
+
+	    
+	ACTIVATE DIALOG oDlg7 CENTERED   
+
+Return
+	
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³fEdiGrupo ºAutor  ³Microsiga -Natie    º Data ³  25/03/02   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³Edita AGrupamentos                                          º±±
+±±º          ³                                                            º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function fEdiGrupo(oGrAux,aLbxAx,nEstou)
+Local oDlg7
+Local nOpt1                      
+Local oGroup1,oGroup2
+Local oFont3
+cDescr	:= space(20)
+
+oOk := LoadBitmap( GetResources(), "Enable" )
+oNo := LoadBitmap( GetResources(), "LBNO" )
+	
+	cTitulo := oEmToAnsi(STR0064)  									//Edita
+
+	DEFINE FONT oFont3  NAME "Arial" BOLD
+	DEFINE MSDIALOG oDlg7 FROM 05,25 TO 15,62 TITLE cTitulo 		//PIXEL
+        
+	@ 018,001  GROUP oGroup2 TO 060,140 OF oDlg7 ;
+       			   PIXEL COLOR CLR_BLUE
+				   oGroup2:SetFont(oFont3)
+		@ 022  ,005   say  OemtoAnsi(STR0047)  						SIZE 65,17 OF oDlg7 PIXEL FONT oFont3
+		@ 022  ,030   say  OemtoAnsi(STR0021)  						SIZE 65,17 OF oDlg7 PIXEL FONT oFont3
+		@ 032  ,005   Say  substr(aLbxAx[nEstou],1,2)				SIZE 15,07 OF oDlg7 PIXEL FONT oFont3 
+		@ 033  ,030   Say  oEmToAnsi(substr(aLbxAx[nEstou],4,20)) SIZE 70,07 of oDlg7 PIXEL FONT oFont3
+		@ 041.5,005   say  substr(aLbxAx[nEstou],1,2)				SIZE 15,07 OF oDlg7 PIXEL FONT oFont3
+		@ 041.5,030   GET  cDescr		      						SIZE 70,07 of oDlg7 PIXEL FONT oFont3
+		
+		DEFINE SBUTTON    oBtn4 FROM 038,110  TYPE 1 ENABLE OF oDlg7 Action( fCadAgrup(5,oGrAux:nAt,@oGrAux,@aLbxAx,,2),oDlg7:End()) //Altera
+
+	    
+	ACTIVATE DIALOG oDlg7 CENTERED 
+
+	    
+Return
+
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³fExcGrupo ºAutor  ³Microsiga -Natie    º Data ³  25/03/02   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³Exclui AGrupamentos                                         º±±
+±±º          ³                                                            º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function fExcGrupo(oGrAux,aLbxAx,nEstou)
+Local oDlg7
+Local nOpt1 
+Local oGroup1,oGroup2
+Local oFont3
+Private nEstou1	:= nEStou
+
+oOk := LoadBitmap( GetResources(), "Enable" )
+oNo := LoadBitmap( GetResources(), "LBNO" )
+	
+	cTitulo := oEmToAnsi(STR0065)  									//Edita
+
+	DEFINE FONT oFont3  NAME "Arial" BOLD
+	DEFINE MSDIALOG oDlg7 FROM 05,25 TO 15,61 TITLE cTitulo 		//PIXEL
+        
+	@ 020,001  GROUP oGroup2 TO 060,140 OF oDlg7 ;
+       			   PIXEL COLOR CLR_BLUE
+				   oGroup2:SetFont(oFont3)
+
+		@ 031,005   say  OemtoAnsi(STR0047)  						SIZE 65,17 OF oDlg7 PIXEL FONT oFont3
+		@ 031,030   say  OemtoAnsi(STR0021)  						SIZE 65,17 OF oDlg7 PIXEL FONT oFont3
+
+		@ 040.5,005 Say  substr(aLbxAx[nEstou1],1,2)				SIZE 15,07 OF oDlg7 PIXEL FONT oFont3
+		@ 040.5,030 Say  oEmToAnsi(substr(aLbxAx[nEstou1],4,20))  SIZE 70,07 of oDlg7 PIXEL FONT oFont3
+
+		DEFINE SBUTTON    oBtn4 FROM 036,110  TYPE 1 ENABLE OF oDlg7 Action  ( fCadAgrup(5,oGrAux:nAt,@oGrAux,@aLbxAx,,3),oDlg7:End() ) //Altera
+
+	    
+	ACTIVATE DIALOG oDlg7 CENTERED
+	
+Return	
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³fOrdena   ºAutor  ³Microsiga -Natie    º Data ³  11/06/01   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³Efetua a ordenacao de cada agrupamento, deixando-se de utiliº±±
+±±º          ³zar a ordem dos campos do SX3                               º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function fOrdena(aGrupAux,nUso)
+
+Local cTitulo 
+Local cDet
+Local cFile  	:= "GpeFicha.fch"
+Local cGo		:= space(3)
+Local nHdl			:= 0 
+Local nOpt1			:= 0
+Local nPos          := 0 
+Local n				:= 0 
+Local aGrupos		:= {}
+Local aOrdem	:= aClone(aGrupAux)              // Agrupamentos 
+Local aAuxiliar := aClone(aGrupAux)
+Local oOk
+Local oNo
+Local oDlg6
+Local oGroup1
+Local oGroup0
+Local oFont3
+
+	oOk := LoadBitmap( GetResources(), "Enable" )
+	oNo := LoadBitmap( GetResources(), "LBNO" )
+
+	cTitulo := oEmToAnsi(STR0038)  									//Altera Ordem
+	aAuxiliar	:= aSort(aAuxiliar,,,{ |x,y| x[3]+x[4] < y[3]+y[4] })
+
+	DEFINE FONT oFont3  NAME "Arial" BOLD	
+	DEFINE FONT oFont   NAME "Arial" 
+	DEFINE MSDIALOG odlg6 FROM 05,25 TO 27,73 TITLE cTitulo 		//PIXEL
+	
+		@ 015,05 Group oGroup0 To 157,185 Of oDlg6 Pixel COLOR CLR_BLUE 
+		@ 25,15.5 LISTBOX oAgrup1;
+		FIELDS  HEADER 	STR0045,STR0046,Left(STR0054,5),STR0055 ;
+		SIZE 120,90 OF odlg6 PIXEL
+		oAgrup1:SetArray(aAuxiliar)
+		oAgrup1:bLine := { || {If(aAuxiliar[oAgrup1:nAt,1],oOk,oNo),OemToAnsi(aAuxiliar[oAgrup1:nAt,2]),aAuxiliar[oAgrup1:nAt,3],aAuxiliar[oAgrup1:nAt,4] }}
+		oAgrup1:Refresh()
+
+		@ 120,015  GROUP oGroup1 TO 150,135 OF oDlg6  	PIXEL COLOR CLR_BLUE
+		@ 123,030 SAY	OemtoAnsi(STR0067)	OF oDlg6	PIXEL FONT oFont COLOR CLR_BLUE
+		@ 132,030 GET	cGo SIZE 15,07    	OF oDlg6	PIXEL FONT oFont
+		DEFINE SBUTTON	oGo FROM 130,060  TYPE 1 ENABLE OF oDlg6 Action  fCadAgrup(3,oAgrup1:nAt,@oAgrup1,@aAuxiliar,@cGo,.f.) //Altera
+	
+		@ 25,140  BUTTON oAcima 		PROMPT STR0019	SIZE 39,12	OF oDlg6	PIXEL ACTION fCadAgrup(1,oAgrup1:nAt,@oAgrup1,@aAuxiliar) FONT oFont3		//"Inverter Acima"
+		@ 45,140  BUTTON oAbaixo		PROMPT STR0020	SIZE 39,12	OF oDlg6	PIXEL ACTION fCadAgrup(2,oAgrup1:nAt,@oAgrup1,@aAuxiliar) FONT oFont3		//"Inverter Abaixo"
+	
+	ACTIVATE DIALOG odlg6 CENTERED ON INIT EnchoiceBar	(odlg6,	{|| nOpt1:=1,odlg6:End() },;
+												     	{|| nOpt1:=0,odlg6:End()})
+	SETAPILHA()
+
+ 	//--volta o Array da tela    
+ 	
+	If nOpt1 == 1
+		For N:= 1 to Len(aAuxiliar)
+			If (npos:= aScan(aDicioW,{|x| x[3] == aAuxiliar[n,5]} )) > 0
+				aDicioW[nPos,1] := aAuxiliar[n,2]
+				aDicioW[nPos,2] := aAuxiliar[n,1]
+				aDicioW[nPos,4] := aAuxiliar[n,3]
+				aDicioW[nPos,5] := aAuxiliar[n,4]
+			Endif
+		Next N                 
+		aSort(aDicioW,,,{|x,y| x[4]+x[5]< y[4]+y[5]})
+		oUso:SetArray(aDicioW)
+		oUso:bLine := { || {if(aDicioW[oUso:nAt,2],oOk,oNo),oEmToAnsi(aDicioW[oUso:nAt,1]),aDicioW[oUso:nAt,4],aDicioW[oUso:nAt,5], aDicioW[oUso:nAt,3]}}
+		oUso:Refresh()
+		
+	    aGrupos	:= {}
+		Aeval(aAuxiliar,{|x|,aAdd(aGrupos,{x[1],x[2],x[3],x[4]} ) })  //U./Campo/Agrup/Ordem
+		oOpcao:SetArray(aGrupos)
+		oOpcao:bLine := { || {If(aGrupos[oOpcao:nAt,1],oOk,oNo),OemToAnsi(aGrupos[oOpcao:nAt,2]),aGrupos[oOpcao:nAt,3],aGrupos[oOpcao:nAt,4] }}
+		oOpcao:Refresh()
+	Endif
+	
+	DeleteObject(oOk)
+	DeleteObject(oNo)
+
+	Return  
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³fTroca    ºAutor  ³Microsiga -Natie    º Data ³  02/04/02   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³Efetua a troca da selecao no ListBox                        º±±
+±±º          ³(controle Usado/nao usado )                                 º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function fTroca( aArray,		; //Array contendo os elementos para troca
+					   cTipo  ,		; //Tipo da Multipla Selecao "M"Marca todos ; "D" Desmarca Todos; "I" Inverte Selecao
+					   nEstou ,		; //oUso:nAt
+	                   l1Elem)       //So pode escolher um  unico elemento usado no Array (.t.)
+	                   
+Local nArray	:= 0 
+Local nX		:= 0
+DEFAULT l1Elem	:= .F.
+		
+	If l1Elem 
+		nArray:= Len(aArray)
+		For nX := 1 To nArray
+			IF nX == nEstou
+				aArray[nEstou,4]	:= .T.
+			Else
+				aArray[nX,4]		:= .F. 
+			EndIF
+		Next nX	
+	    oAgrup:SetArray(aArray)
+		oAgrup:bLine := { || {if(aArray[oAgrup:nAT,4],oOk,oNo),aArray[oAgrup:nAt,2],aArray[oAgrup:nAt,3]}}
+	Else
+		IF cTipo == "M"
+			aEval( aArray , { |x,y| aArray[y,2] := .T. } )
+		ElseIF cTipo == "D"
+			aEval( aArray , { |x,y| aArray[y,2] := .F. } )
+		ElseIF cTipo == "I"
+			aEval( aArray , { |x,y| aArray[y,2] := !aArray[y,2] } )
+		Else
+			aArray[nEstou,2] := !aArray[nEstou,2]
+		EndIF
+		
+    Endif
+
+Return aArray
+
+
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³fGrupos   ºAutor  ³Microsiga -Natie    º Data ³  02/04/02   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³Monta  Array dos Campos Agrupados                           º±±
+±±º          ³                                                            º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³ AP5                                                        º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function  fGrupos(aGrupAux,nUso)
+
+Local n
+	aGrupos:= {} 
+	For n:= 1 to Len(aGrupAux)
+		If nUso == aGrupAux[n,4]
+			Aadd(Agrupos,{aGrupAux[n,2], aGrupAux[n,1],aGrupAux[n,4],aGrupAux[n,5],aGrupAux[n,3] } )
+		Endif
+	next n 
+
+	If Len(aGrupos) <= 0   //.and. lFirst   
+		Aadd(AGrupos,{.f.,"","","",""})
+		lFirst	:= .F.
+	Endif  
+	oOpcao:SetArray(aGrupos)
+	oOpcao:bLine := { || {If(aGrupos[oOpcao:nAt,1],oOk,oNo),OemToAnsi(aGrupos[oOpcao:nAt,2]),aGrupos[oOpcao:nAt,3],aGrupos[oOpcao:nAt,4] }}
+	oOpcao:Refresh()
+	
+	fAtivaBtn(aGrupos,oBtnOrdem)
+	
+Return aGrupos
+
+
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³fAtivaBtn ºAutor  ³Microsiga -Natie    º Data ³  25/04/02   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³Habilita/desabilita botao da fchoice de acordo com o agrupa-º±±
+±±º          ³mento escolhido                                             º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³gpea260                                                     º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function fAtivaBtn(aLbx,oBtnAux)
+
+If Type("oBtnOrdem") # "U" 
+	If len(aLbx) > 0  .and. aLbx[1,3] # ""
+		oBtnAux:enable()
+	Else	
+		oBtnAux:disable()
+	Endif	
+Endif	
+
+Return .T.
+/*
+ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+±±ÉÍÍÍÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍËÍÍÍÍÍÍÑÍÍÍÍÍÍÍÍÍÍÍÍÍ»±±
+±±ºPrograma  ³f260Vazio ºAutor  ³Microsiga -Natie    º Data ³  06/04/04   º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÊÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºDesc.     ³Verifica se array dos campos possui pelo menos 01 campo seleº±±
+±±º          ³cionado para visualizacao ou impressao da Ficha             º±±
+±±ÌÍÍÍÍÍÍÍÍÍÍØÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¹±±
+±±ºUso       ³gpea260                                                     º±±
+±±ÈÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼±±
+±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+*/
+Static Function f260Vazio(aDicBkp) 
+Local nX   		:= 0
+Local lVazio 	:= .T.
+
+For nX:= 1 to Len(aDicioW)
+	If aDicioW[nX,2]
+		lVazio	:= .F. 
+	Endif 
+Next nX
+
+If lVazio 
+	aDicioT	:= Aclone(aDicBkp)
+	Help(" ",1,"A260CPO") 	//-- "Para que a Ficha seja visualizada ou impressa, e necessario selecionar os campos desejados.## " 
+Endif
+Return(lVazio)
+
+/*                                	
+ÚÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄ¿
+³Fun‡„o    ³ MenuDef		³Autor³  Luiz Gustavo     ³ Data ³07/12/2006³
+ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄ´
+³Descri‡„o ³Isola opcoes de menu para que as opcoes da rotina possam    ³
+³          ³ser lidas pelas bibliotecas Framework da Versao 9.12 .      ³
+ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³Sintaxe   ³< Vide Parametros Formais >									³
+ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ Uso      ³GPEA260                                                     ³
+ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³ Retorno  ³aRotina														³
+ÃÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+³Parametros³< Vide Parametros Formais >									³
+ÀÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ*/   
+Static Function MenuDef()
+
+Local aRotina 
+Private cImpFch := "u_gper460WDB"
+
+//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
+//³ Ponto de Entrada para Alterar nome do programa Impressao da Ficha de registro |
+//³ alterar nome da variavel "cImpFch"											  |
+//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+If ExistBlock("FIMPFCH")
+	EXECBLOCK("FIMPFCH",.F.,.F.)
+Endif
+
+ 
+aRotina  :=        {	{ STR0004 , "PesqBrw" , 0 , 1,,.F.},;  //"Pesquisar"
+						{ STR0044 , "gp260Dic" , 0 , 2},;  //"Configuracao"
+						{ STR0006 , "gp260Con" , 0 , 4},;  //"Ficha"
+						{ STR0007 , cImpFch    , 0 , 3},;  //"Impress„o"
+						{ STR0083 , "GpLegend"      , 0 , 5 , ,.F.}}//"Legenda"
+
+
+Return aRotina
